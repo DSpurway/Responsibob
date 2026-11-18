@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Certificate v2: SAMCO + GenAI Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #fff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+  .prog-header { background: #1f2328; color: #fff; padding: 20px 24px; margin-bottom: 32px; }
+  .prog-header h1 { font-size: 20px; font-weight: 700; }
+  .prog-header p { font-size: 13px; color: #adb5bd; margin-top: 4px; }
+  .cert { border: 2px solid #1f2328; margin-bottom: 40px; }
+  .cert-head { background: #1f2328; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .cert-head h2 { font-size: 16px; font-weight: 700; }
+  .cert-head span { font-size: 11px; background: rgba(255,255,255,0.15); padding: 3px 9px; }
+  .cert-body { padding: 20px; }
+  .cert-meta { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .cert-meta dt { color: #57606a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .cert-meta dd { margin-top: 1px; font-weight: 500; }
+  .slabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #57606a; margin: 20px 0 8px; padding-bottom: 3px; border-bottom: 1px solid #e5e7eb; }
+  .scale-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .scale-row { display: flex; align-items: center; gap: 8px; }
+  .scale-bar { display: flex; align-items: center; padding: 4px 10px; font-size: 12px; font-weight: 700; color: #fff; min-width: 60px; position: relative; flex-shrink: 0; }
+  .scale-bar::after { content:''; position:absolute; right:-9px; top:50%; transform:translateY(-50%); border-left:9px solid transparent; border-top:11px solid transparent; border-bottom:11px solid transparent; }
+  .bar-a{background:#008054;min-width:110px;}.bar-a::after{border-left-color:#008054;}
+  .bar-b{background:#19a643;min-width:130px;}.bar-b::after{border-left-color:#19a643;}
+  .bar-c{background:#8dc21f;min-width:150px;color:#1f2328;}.bar-c::after{border-left-color:#8dc21f;}
+  .bar-d{background:#ffd500;min-width:170px;color:#1f2328;}.bar-d::after{border-left-color:#ffd500;}
+  .bar-e{background:#f4aa00;min-width:190px;color:#1f2328;}.bar-e::after{border-left-color:#f4aa00;}
+  .bar-f{background:#e8680a;min-width:210px;}.bar-f::after{border-left-color:#e8680a;}
+  .bar-g{background:#c8181f;min-width:230px;}.bar-g::after{border-left-color:#c8181f;}
+  .scale-anno { font-size: 12px; color: #57606a; padding-left: 16px; }
+  .marker { display:inline-block; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; margin-left:6px; }
+  .mk-current{background:#1f2328;} .mk-potential{background:#3b82d4;} .mk-was{background:#7c5cd8;}
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+  th { background:#f7f8fa; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:#57606a; padding:7px 9px; border:1px solid #e5e7eb; text-align:left; }
+  td { padding:7px 9px; border:1px solid #e5e7eb; vertical-align:top; }
+  tr:nth-child(even) td { background:#f7f8fa; }
+  .good{color:#008054;font-weight:600;} .warn{color:#e8680a;font-weight:600;} .amber{color:#c07a00;font-weight:600;} .neutral{color:#57606a;}
+  .rtag { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; color:#fff; }
+  .rtag-a{background:#008054;} .rtag-b{background:#19a643;} .rtag-c{background:#8dc21f;color:#1f2328;} .rtag-d{background:#ffd500;color:#1f2328;} .rtag-e{background:#f4aa00;color:#1f2328;} .rtag-f{background:#e8680a;} .rtag-g{background:#c8181f;}
+  .rec-list{list-style:none;} .rec-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid #e5e7eb;margin-bottom:5px;font-size:12px;}
+  .rec-tag{flex-shrink:0;font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;color:#fff;white-space:nowrap;}
+  .rc-done{background:#008054;} .rc-high{background:#c8181f;} .rc-med{background:#e8680a;} .rc-low{background:#3b82d4;} .rc-future{background:#7c5cd8;}
+  .mbox{border-left:3px solid #3b82d4;background:#f7f8fa;padding:12px 14px;font-size:12px;}
+  .mbox p+p{margin-top:8px;}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;}
+  .cg-card{border:1px solid #e5e7eb;background:#f7f8fa;padding:14px;}
+  .cg-card h3{font-size:13px;font-weight:700;margin-bottom:8px;}
+  .big-rating{font-size:40px;font-weight:800;color:#fff;width:56px;height:56px;display:flex;align-items:center;justify-content:center;float:right;margin:0 0 8px 12px;}
+  .br-f{background:#e8680a;} .br-c{background:#8dc21f;color:#1f2328;} .br-a{background:#008054;} .br-b{background:#19a643;} .br-d{background:#ffd500;color:#1f2328;}
+  .cg-stat{font-size:12px;color:#57606a;margin-top:3px;}
+  footer{margin-top:48px;padding-top:14px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#57606a;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="prog-header">
+    <h1>Responsibob — Code Energy Performance Certificates v2</h1>
+    <p>June 2026 &nbsp;·&nbsp; EMEA AI on IBM Power Squad &nbsp;·&nbsp; SAMCO RPG + Carbon GenAI Demo Stack</p>
+  </div>
+
+  <!-- CERT 1: GenAI -->
+  <div class="cert">
+    <div class="cert-head"><h2>Certificate 2 — Carbon GenAI Demo Stack</h2><span>June 2026</span></div>
+    <div class="cert-body">
+      <dl class="cert-meta">
+        <div><dt>Project</dt><dd>Carbon GenAI Demos</dd></div>
+        <div><dt>Stack</dt><dd>llama.cpp + Node proxy + Next.js</dd></div>
+        <div><dt>Model</dt><dd>Granite 4.0 Micro GGUF Q4_K_M</dd></div>
+        <div><dt>Platform</dt><dd>IBM Power PPC64LE / RHEL 9</dd></div>
+        <div><dt>Layers assessed</dt><dd>Build · Inference · Proxy · UI</dd></div>
+        <div><dt>Date</dt><dd>June 2026</dd></div>
+      </dl>
+      <div class="slabel">Rating Scale</div>
+      <div class="scale-wrap">
+        <div class="scale-row"><div class="scale-bar bar-a">A 92–100</div><div class="scale-anno">Pre-built binary, streaming inference, minimal JS bundle</div></div>
+        <div class="scale-row"><div class="scale-bar bar-b">B 81–91</div><div class="scale-anno">Pre-built binary, non-streaming, lean proxy</div></div>
+        <div class="scale-row"><div class="scale-bar bar-c">C 69–80</div><div class="scale-anno">Compile-from-source once, streaming, optimised UI &nbsp;<span class="marker mk-potential">POTENTIAL</span></div></div>
+        <div class="scale-row"><div class="scale-bar bar-d">D 55–68</div><div class="scale-anno">Compile-from-source, no streaming, verbose proxy, heavy bundle &nbsp;<span class="marker mk-current">CURRENT</span></div></div>
+        <div class="scale-row"><div class="scale-bar bar-e">E 39–54</div><div class="scale-anno">Repeated recompile, full-precision model, all debug logging on</div></div>
+        <div class="scale-row"><div class="scale-bar bar-f">F 21–38</div><div class="scale-anno">Granite Vision (4-5 min inference, 4-6 GB RAM) &nbsp;<span class="marker mk-was">REJECTED</span></div></div>
+        <div class="scale-row"><div class="scale-bar bar-g">G  1–20</div><div class="scale-anno">Repeated large model downloads, no quantisation</div></div>
+      </div>
+      <div class="slabel">Component Assessment</div>
+      <table>
+        <thead><tr><th>Component</th><th>Rating</th><th>Key Finding</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Build — llama.cpp compile from source</strong></td><td><span class="rtag rtag-d">D</span></td><td class="warn">10–15 min C++ compile per TechZone provision. deploy-carbon-genai.sh Phase 10.</td></tr>
+          <tr><td><strong>Model — Granite 4.0 Micro Q4_K_M</strong></td><td><span class="rtag rtag-b">B</span></td><td class="good">Correct choice: 4-bit GGUF, OpenBLAS-optimised for PPC64LE.</td></tr>
+          <tr><td><strong>Inference — llama.cpp server (untuned)</strong></td><td><span class="rtag rtag-c">C</span></td><td class="amber">No thread/ctx/batch tuning; auto-detect defaults.</td></tr>
+          <tr><td><strong>Proxy — verbose debug logging</strong></td><td><span class="rtag rtag-d">D</span></td><td class="warn">console.log(headers) + logLevel:'debug' on every request/chunk.</td></tr>
+          <tr><td><strong>UI — stream: false</strong></td><td><span class="rtag rtag-d">D</span></td><td class="warn">Buffers full response; holds KV-cache until completion. extraction.js already has streaming code, unused.</td></tr>
+          <tr><td><strong>UI — useMemo for prompts</strong></td><td><span class="rtag rtag-b">B</span></td><td class="good">Prevents rebuilding prompt on every render. Applied consistently.</td></tr>
+          <tr><td><strong>Passport — PassportEye vs Granite Vision</strong></td><td><span class="rtag rtag-a">A</span></td><td class="good">Traditional CV (&lt;1s, ~100MB) vs LLM (4-5 min, 4-6GB). 100–300× better. Best existing Responsibob decision.</td></tr>
+          <tr><td><strong>Deploy — unconditional dnf update</strong></td><td><span class="rtag rtag-e">E</span></td><td class="warn">Runs on every redeploy. Several minutes of unnecessary CPU/network.</td></tr>
+          <tr><td><strong>Deploy — PyTorch for OpenBLAS</strong></td><td><span class="rtag rtag-d">D</span></td><td class="warn">~2 GB of Python wheels installed solely for a .so library path. Never used at runtime.</td></tr>
+        </tbody>
+      </table>
+      <div class="slabel">Top 3 Improvements</div>
+      <ul class="rec-list">
+        <li><span class="rec-tag rc-high">High</span><div><strong>Switch to pre-built Ollama binary.</strong> Eliminates 10–15 min compile, removes PyTorch venv (~2GB), removes pinned commit. Proxy and UI unchanged — same OpenAI-compatible endpoint.</div></li>
+        <li><span class="rec-tag rc-high">High</span><div><strong>Enable stream: true in the UI.</strong> extraction.js already has the correct code with commented-out onToken callback. Reduces peak RAM pressure, gives user progressive feedback.</div></li>
+        <li><span class="rec-tag rc-med">Medium</span><div><strong>Remove debug logging from proxy.</strong> Gate console.log(headers) behind process.env.DEBUG. Change logLevel:'debug' to logLevel:'warn'.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CERT 2: SAMCO recap -->
+  <div class="cert">
+    <div class="cert-head"><h2>Certificate 1 — SAMCO RPG Modernisation (recap)</h2><span>June 2026</span></div>
+    <div class="cert-body">
+      <table>
+        <thead><tr><th>Stage</th><th>Program</th><th>Rating</th><th>DB ops / 100 records</th><th>Relative energy</th></tr></thead>
+        <tbody>
+          <tr><td>Legacy RLA</td><td>ART200</td><td><span class="rtag rtag-f">F</span></td><td class="warn">300 ops</td><td class="warn">Baseline 100%</td></tr>
+          <tr><td>SQL cursor</td><td>ART301 / ORD200</td><td><span class="rtag rtag-c">C</span></td><td class="amber">3–7 ops</td><td class="good">~1–3%</td></tr>
+          <tr><td>REST API module</td><td>ART400</td><td><span class="rtag rtag-a">A</span></td><td class="good">1 op</td><td class="good">~0.3–1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Cross-stack -->
+  <div class="slabel">Cross-Stack Summary</div>
+  <div class="compare-grid">
+    <div class="cg-card"><div class="big-rating br-f">F</div><h3>SAMCO ART200 — Legacy</h3><div class="cg-stat">300 I/O ops per 100-record query. Superseded by ART400.</div></div>
+    <div class="cg-card"><div class="big-rating br-a">A</div><h3>SAMCO ART400 — Current</h3><div class="cg-stat">1 I/O op per equivalent query. Target state achieved.</div></div>
+    <div class="cg-card"><div class="big-rating br-d">D</div><h3>Carbon GenAI — Current</h3><div class="cg-stat">Compile-from-source, no streaming, verbose proxy.</div></div>
+    <div class="cg-card"><div class="big-rating br-b">B</div><h3>Carbon GenAI — Potential</h3><div class="cg-stat">Ollama + streaming + lean proxy. Achievable with 3 changes.</div></div>
+  </div>
+
+  <footer>Responsibob Initiative · Made with IBM Bob · June 2026</footer>
+</div>
+</body>
+</html>

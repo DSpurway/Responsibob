@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Unified Framework v4 (Definitive)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #fff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .prog-header { background: #1f2328; color: #fff; padding: 20px 24px; margin-bottom: 28px; }
+  .prog-header h1 { font-size: 20px; font-weight: 700; }
+  .prog-header p { font-size: 13px; color: #adb5bd; margin-top: 4px; }
+  .version-tag { display: inline-block; background: #3b82d4; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 9px; margin-top: 8px; letter-spacing: 0.4px; }
+
+  /* Section labels */
+  .slabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #57606a; margin: 28px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+
+  /* Callouts */
+  .callout { border-left: 3px solid #3b82d4; background: #f0f5ff; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; }
+  .callout.green  { border-left-color: #008054; background: #f0faf5; }
+  .callout.amber  { border-left-color: #c07a00; background: #fff8f0; }
+  .callout.red    { border-left-color: #c8181f; background: #fff0f0; }
+  .callout.purple { border-left-color: #7c5cd8; background: #f5f0ff; }
+  .callout p+p { margin-top: 8px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f7f8fa; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #57606a; padding: 7px 9px; border: 1px solid #e5e7eb; text-align: left; }
+  td { padding: 7px 9px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f8fa; }
+  .good{color:#008054;font-weight:600;} .warn{color:#e8680a;font-weight:600;} .red-t{color:#c8181f;font-weight:600;} .amber-t{color:#c07a00;font-weight:600;} .muted{color:#57606a;}
+
+  /* Tier chips */
+  .tier { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; color:#fff; white-space:nowrap; }
+  .t-a{background:#008054;} .t-b{background:#19a643;} .t-c{background:#8dc21f;color:#1f2328;} .t-d{background:#ffd500;color:#1f2328;} .t-e{background:#f4aa00;color:#1f2328;} .t-f{background:#e8680a;} .t-g{background:#c8181f;}
+
+  /* Four-layer stack */
+  .layer-stack { margin-top: 4px; }
+  .layer { border: 1px solid #e5e7eb; margin-bottom: 3px; display: flex; align-items: stretch; font-size: 12px; }
+  .layer-badge { width: 10px; flex-shrink: 0; }
+  .lb-green{background:#008054;} .lb-teal{background:#0e7490;} .lb-blue{background:#3b82d4;} .lb-purple{background:#7c5cd8;}
+  .layer-name { width: 170px; flex-shrink: 0; padding: 10px 12px; font-weight: 700; background: #f7f8fa; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; justify-content: center; }
+  .layer-name span { font-weight: 400; font-size: 11px; color: #57606a; margin-top: 2px; }
+  .layer-detail { flex: 1; padding: 10px 12px; }
+  .layer-owner { width: 130px; flex-shrink: 0; padding: 10px 12px; font-size: 11px; color: #57606a; border-left: 1px solid #e5e7eb; display: flex; align-items: center; }
+
+  /* Defra curve */
+  .curve-wrap { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .curve-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .curve-label { width: 200px; flex-shrink: 0; }
+  .curve-bar-bg { flex: 1; background: #e5e7eb; height: 22px; position: relative; }
+  .curve-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; }
+  .curve-pct { width: 45px; text-align: right; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+
+  /* Jevons grid */
+  .jevons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+  @media (max-width: 520px) { .jevons-grid { grid-template-columns: 1fr; } }
+  .jev-card { border: 1px solid #e5e7eb; padding: 13px; font-size: 12px; }
+  .jev-card h3 { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .jev-card p { color: #57606a; }
+  .jev-card p+p { margin-top: 6px; }
+  .jev-card.risk { border-color: #c8181f; background: #fff0f0; }
+  .jev-card.good { border-color: #008054; background: #f0faf5; }
+
+  /* DevOps gate */
+  .gate-row { display: flex; align-items: stretch; gap: 0; font-size: 11px; margin-top: 4px; }
+  .gate-step { flex: 1; padding: 9px 8px; background: #f7f8fa; border: 1px solid #e5e7eb; text-align: center; }
+  .gate-step.active { background: #f0faf5; border-color: #008054; font-weight: 700; }
+  .gate-step.block { background: #fff0f0; border-color: #c8181f; font-weight: 700; }
+  .gate-arrow { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #57606a; }
+
+  /* Convergence */
+  .conv-grid { display: grid; grid-template-columns: 1fr 36px 1fr; border: 1px solid #e5e7eb; margin-top: 4px; font-size: 12px; }
+  .conv-col { padding: 14px; }
+  .conv-col h3 { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .conv-col ul { list-style: none; padding: 0; }
+  .conv-col li { padding: 3px 0; color: #57606a; }
+  .conv-col li::before { content: '→ '; color: #3b82d4; font-weight: 700; }
+  .conv-middle { background: #1f2328; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 8px 4px; }
+  .conv-col.left { background: #f0faf5; }
+  .conv-col.right { background: #f0f5ff; }
+
+  /* Recommendations */
+  .rec-list { list-style: none; }
+  .rec-list li { display: flex; gap: 10px; align-items: flex-start; padding: 9px 11px; border: 1px solid #e5e7eb; margin-bottom: 5px; font-size: 12px; }
+  .rec-tag { flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 7px; color: #fff; white-space: nowrap; }
+  .rc-new{background:#7c5cd8;} .rc-conf{background:#008054;} .rc-add{background:#3b82d4;} .rc-risk{background:#c8181f;}
+
+  /* Mini bar */
+  .mini-bar-bg{background:#e5e7eb;height:10px;width:100%;}
+  .mini-bar-fill{height:10px;}
+
+  footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="prog-header">
+    <h1>Responsibob — Unified Energy Framework</h1>
+    <p>The definitive version &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; EMEA AI on IBM Power Squad</p>
+    <div class="version-tag">v4 — incorporates: arXiv 2410.05460 · BCS Responsible Computing · Derek Newton / DWP (Oct 2024) · Jevons' Paradox (nuanced)</div>
+  </div>
+
+  <!-- ══ EXECUTIVE SUMMARY ══ -->
+  <div class="callout green">
+    <p><strong>Responsibob is a developer-level code energy efficiency framework</strong> operating in the "develop efficiently" band of the Defra carbon reduction curve (20% potential saving). It uses a two-axis model — language multiplier × algorithmic efficiency — to produce A–G ratings grounded in real source code evidence.</p>
+    <p><strong>Core principle:</strong> Good engineering decisions and responsible computing decisions are usually the same decision. The SAMCO RLA→SQL transformation was driven by performance. The PassportEye choice was driven by demo speed. Neither was driven by energy — but both were the right energy choice. Making that visible is what Responsibob does.</p>
+  </div>
+
+  <!-- ══ FOUR LAYERS ══ -->
+  <div class="slabel">The Complete Picture — Four Layers of Code Energy Efficiency</div>
+  <div class="layer-stack">
+    <div class="layer">
+      <div class="layer-badge lb-green"></div>
+      <div class="layer-name">Layer 1<br><span>Policy / Design</span></div>
+      <div class="layer-detail"><strong>Should we build it at all? What is the minimum viable scope?</strong> Not building saves 100% of the energy. Designing to use less saves 60%. This is the highest-leverage decision — and it happens before a developer writes a line of code.</div>
+      <div class="layer-owner">DWP / Defra<br>(Derek Newton deck)</div>
+    </div>
+    <div class="layer">
+      <div class="layer-badge lb-teal"></div>
+      <div class="layer-name">Layer 2<br><span>Infrastructure</span></div>
+      <div class="layer-detail"><strong>How efficiently does the infrastructure run the code?</strong> Home Office "Hosting Cost Efficiency Rating" (A–G): autoscaling, rightsizing, scheduling, excess capacity. Turbonomic ARM. DevOps Velocity pipeline visibility. Independent of what the code does algorithmically.</div>
+      <div class="layer-owner">Home Office /<br>DWP (Derek)</div>
+    </div>
+    <div class="layer">
+      <div class="layer-badge lb-blue"></div>
+      <div class="layer-name">Layer 3<br><span>Algorithm ← Responsibob</span></div>
+      <div class="layer-detail"><strong>How efficiently does the code accomplish its task?</strong> DB I/O ops per transaction (SAMCO F→A). Inference streaming vs buffering. Build-time cost (Ollama). Language multiplier (RPG ~1.05× vs TypeScript 21.5×). These are code decisions that infrastructure optimisation cannot fix.</div>
+      <div class="layer-owner"><strong>Responsibob</strong></div>
+    </div>
+    <div class="layer">
+      <div class="layer-badge lb-purple"></div>
+      <div class="layer-name">Layer 4<br><span>AI / GenAI</span></div>
+      <div class="layer-detail"><strong>When AI is used: is the right model chosen for the task?</strong> PassportEye (traditional CV, &lt;1s, 100MB) vs Granite Vision (LLM, 4-5 min, 4-6GB). Model quantisation. Context window sizing. The question: is GenAI the right tool, or is a deterministic algorithm cheaper and better?</div>
+      <div class="layer-owner"><strong>Responsibob</strong> +<br>Derek's deck</div>
+    </div>
+  </div>
+
+  <!-- ══ DEFRA CURVE ══ -->
+  <div class="slabel">The Defra Carbon Reduction Curve — Where Responsibob Sits</div>
+  <p style="font-size:13px;color:#57606a;margin-bottom:10px;">Credit: Ned Gartside (Defra), cited in Derek Newton's DWP deck. Shows carbon reduction potential at each lifecycle stage.</p>
+  <div class="curve-wrap">
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design &amp; develop nothing</strong><br><span style="font-size:11px;color:#57606a;">Challenge the need; find alternative outcomes</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:100%;background:#008054;">Policy — Layer 1</div></div>
+      <div class="curve-pct good">100%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design to use less</strong><br><span style="font-size:11px;color:#57606a;">Maximise existing assets, minimise footprint</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:60%;background:#19a643;">Design — Layer 1/2</div></div>
+      <div class="curve-pct good">60%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design clever</strong><br><span style="font-size:11px;color:#57606a;">Optimise processing, transmission, storage</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:40%;background:#8dc21f;color:#1f2328;">Infrastructure — Layer 2</div></div>
+      <div class="curve-pct amber-t">40%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Develop efficiently</strong> ← <em style="color:#3b82d4;">Responsibob</em><br><span style="font-size:11px;color:#57606a;">Green applications, software and systems</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:20%;background:#3b82d4;">Responsibob — Layers 3 &amp; 4</div></div>
+      <div class="curve-pct" style="color:#3b82d4;font-weight:700;">20%</div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:12px;">
+    <p><strong>The 20% position is honest and important.</strong> Policy and design decisions outweigh code efficiency by 3–5×. But 20% of £1B/year (DWP's ICT spend) is still £200M of potential. And it is the band developers directly control in their daily work. Responsibob is a developer tool — making the 20% visible and improvable — while pointing upward to the larger levers when the opportunity exists.</p>
+  </div>
+
+  <!-- ══ CERTIFICATE RESULTS ══ -->
+  <div class="slabel">Certificate Results — Both Projects, Both Axes</div>
+  <table>
+    <thead><tr><th>Project / Component</th><th>Language</th><th>Lang axis</th><th>Algo axis</th><th>Combined</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SAMCO ART200</strong> — Legacy RLA</td><td>RPG</td><td><span class="tier t-a">A ~1.05×</span></td><td><span class="tier t-f">F 300 ops</span></td><td><strong class="warn">F</strong></td><td>Superseded by ART400</td></tr>
+      <tr><td><strong>SAMCO ART301/ORD200</strong> — SQL cursor</td><td>RPG</td><td><span class="tier t-a">A ~1.05×</span></td><td><span class="tier t-c">C 3–7 ops</span></td><td><strong class="amber-t">C</strong></td><td>Intermediate stage</td></tr>
+      <tr style="background:#f0faf5;"><td><strong>SAMCO ART400</strong> — REST API module</td><td>RPG</td><td><span class="tier t-a">A ~1.05×</span></td><td><span class="tier t-a">A 1 op</span></td><td><strong class="good">A ✓</strong></td><td>Both axes excellent</td></tr>
+      <tr><td><strong>GenAI — llama.cpp inference</strong></td><td>C++</td><td><span class="tier t-b">B 1.34×</span></td><td><span class="tier t-c">C untuned</span></td><td><strong class="amber-t">C</strong></td><td>Tune threads/ctx/batch → B</td></tr>
+      <tr><td><strong>GenAI — Node.js proxy</strong></td><td>JavaScript</td><td><span class="tier t-e">E 4.45×</span></td><td><span class="tier t-d">D debug log</span></td><td><strong class="warn">E</strong></td><td>Fix logging → algo improves; lang ceiling ~E</td></tr>
+      <tr><td><strong>GenAI — Next.js UI</strong></td><td>TypeScript</td><td><span class="tier t-f">F 21.5×</span></td><td><span class="tier t-c">C mostly good</span></td><td><strong class="warn">E</strong></td><td>Lang ceiling F; UI does least compute — acceptable</td></tr>
+      <tr><td><strong>GenAI — PassportEye</strong></td><td>Python</td><td><span class="tier t-g">G 75.9×</span></td><td><span class="tier t-a">A &lt;1s/100MB</span></td><td><strong class="amber-t">D</strong></td><td>Worst language, best algorithm. Beats Granite Vision (C++, F algo) by 100–300×</td></tr>
+      <tr style="background:#f0f5ff;"><td><strong>GenAI — after improvements</strong></td><td>Mixed</td><td>—</td><td>—</td><td><strong class="good">B–C</strong></td><td>Ollama + streaming + lean proxy</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══ JEVONS ══ -->
+  <div class="slabel">Jevons' Paradox — A Nuanced Risk, Not a Uniform Warning</div>
+  <div class="callout amber">
+    <p><strong>Jevons' Paradox:</strong> efficiency improvements that make a resource cheaper to use can lead to increased consumption — if there is latent demand waiting to be served. <strong>But the risk is not uniform across all contexts.</strong></p>
+  </div>
+  <div class="jevons-grid">
+    <div class="jev-card good">
+      <h3>✓ Low risk — SAMCO (short term)</h3>
+      <p>An operational system not at capacity ceiling will not spontaneously run 300× more queries. If today's utilisation is 40%, making queries 300× faster does not fill that gap immediately. The efficiency gain is largely a real saving.</p>
+      <p><strong>Monitor over 1–2 years:</strong> efficiency may enable new features that add load over time — not Jevons' Paradox in the classical sense, but worth tracking.</p>
+    </div>
+    <div class="jev-card risk">
+      <h3>⚠ Higher risk — GenAI inference</h3>
+      <p>When AI inference gets cheaper, organisations tend to expand the scope of what they ask AI to do — not just do the same work for less. This is new demand created by lower cost, not latent demand served.</p>
+      <p>Cheaper tokens → more calls per session → new use cases enabled. The rebound effect here is more active than in traditional software.</p>
+    </div>
+    <div class="jev-card good">
+      <h3>✓ Negligible — PassportEye</h3>
+      <p>Bounded by the number of passports processed. You cannot "use more CV" to parse an MRZ than you would with a vision model. Task volume is determined by business process, not by compute cost. Clean saving with no rebound.</p>
+    </div>
+    <div class="jev-card risk">
+      <h3>⚠ Watch — new features enabled by headroom</h3>
+      <p>SAMCO ART400's speed may enable integrations or features previously impractical. This is not Jevons' Paradox classically — it is value creation from efficiency — but it does mean net consumption may not fall by the full 99.7%.</p>
+      <p>The correct framing: certificates measure per-transaction efficiency. Volume trending (DevOps Velocity) confirms net benefit.</p>
+    </div>
+  </div>
+
+  <!-- ══ DEVOPS GATE ══ -->
+  <div class="slabel">The DevOps Gate — From Certificate to Enforcement</div>
+  <p style="font-size:13px;color:#57606a;margin-bottom:8px;">Derek Newton's deck (Phase 2): automated gates block deployment if a code change increases resource usage beyond a threshold. This is the most actionable version of Responsibob.</p>
+  <div class="gate-row">
+    <div class="gate-step">Code change<br>committed</div>
+    <div class="gate-arrow">→</div>
+    <div class="gate-step">CI/CD<br>build</div>
+    <div class="gate-arrow">→</div>
+    <div class="gate-step active">Responsibob<br>EPC check<br><small>I/O ops · lang× · algo</small></div>
+    <div class="gate-arrow">→</div>
+    <div class="gate-step active">Compare<br>to baseline<br>rating</div>
+    <div class="gate-arrow">→</div>
+    <div class="gate-step block">Rating<br>regresses?<br>Block + flag.</div>
+    <div class="gate-arrow">→</div>
+    <div class="gate-step" style="background:#f0faf5;border-color:#008054;">Holds or<br>improves?<br>Deploy. ✓</div>
+  </div>
+  <div class="callout purple" style="margin-top:12px;">
+    <p><strong>Responsibob (code layer) + Turbonomic (infrastructure layer) + DevOps Velocity (volume trending) = a complete, non-paradoxical energy gate.</strong> A code change that looks green on Responsibob but increases infrastructure resource usage would be caught by the Turbonomic layer. A change that improves per-query efficiency but increases call volume would be caught by the trending layer. All three layers are needed.</p>
+  </div>
+
+  <!-- ══ CONVERGENCE ══ -->
+  <div class="slabel">Where This Work and Derek's Work Converge</div>
+  <div class="conv-grid">
+    <div class="conv-col left">
+      <h3>Derek Newton / DWP (Oct 2024)</h3>
+      <ul>
+        <li>A–G rating for cloud hosting efficiency</li>
+        <li>Infrastructure: autoscaling, rightsizing, scheduling</li>
+        <li>GitLab + DevOps Velocity pipeline metrics</li>
+        <li>Turbonomic ARM in CI/CD pipeline</li>
+        <li>Jevons' Paradox monitoring via trend data</li>
+        <li>Defra carbon curve: policy → design → code</li>
+        <li>watsonx.ai DevOps foundation model (vision)</li>
+        <li>Carbon metrics in devops.automation research</li>
+      </ul>
+    </div>
+    <div class="conv-middle">converge</div>
+    <div class="conv-col right">
+      <h3>Responsibob (June 2026)</h3>
+      <ul>
+        <li>A–G rating for code algorithmic efficiency</li>
+        <li>Code: I/O ops, language multiplier, streaming</li>
+        <li>Evidence grounded in real source files</li>
+        <li>Two-axis model: language × algorithm</li>
+        <li>PassportEye as algorithm-over-AI case study</li>
+        <li>Build-time energy (llama.cpp → Ollama)</li>
+        <li>Bob (AI) generating the certificates</li>
+        <li>Developer-level, per-commit assessable</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ RECOMMENDATIONS ══ -->
+  <div class="slabel">What This Framework Recommends</div>
+  <ul class="rec-list">
+    <li><span class="rec-tag rc-conf">Confirmed</span><div><strong>SAMCO ART400 is a clean A-rating.</strong> RPG Tier 1 language + algorithmically optimal SQL = both axes excellent. The 20% "develop efficiently" opportunity is fully realised here. This is the model for IBM i modernisation energy efficiency.</div></li>
+    <li><span class="rec-tag rc-conf">Confirmed</span><div><strong>GenAI demo top 3 improvements stand:</strong> (1) Switch to pre-built Ollama binary — eliminates build-time energy, removes PyTorch venv; (2) Enable stream:true — extraction.js code is already written; (3) Remove debug logging from proxy — one-line change. Combined: D → B rating.</div></li>
+    <li><span class="rec-tag rc-new">New</span><div><strong>Responsibob sits in the 20% "develop efficiently" band of the Defra curve.</strong> Every certificate should acknowledge this. Policy decisions (don't build it) and design decisions (use existing systems) outweigh code efficiency by 3–5×. Responsibob is the developer's lever — not the only lever, and not the biggest, but the one closest to the code.</div></li>
+    <li><span class="rec-tag rc-new">New</span><div><strong>Jevons' Paradox caveats should be differentiated, not uniform.</strong> SAMCO: low short-term risk (system not at capacity ceiling). GenAI inference: higher risk (cheaper tokens tend to unlock more usage). PassportEye: negligible (bounded by task volume). Blanket warnings undermine credibility; nuanced caveats strengthen it.</div></li>
+    <li><span class="rec-tag rc-add">Opportunity</span><div><strong>A combined DWP pitch is now possible.</strong> Derek's infrastructure efficiency work + Responsibob's code efficiency work, applied to real DWP-style RPG modernisation (SAMCO as the reference example), would be a compelling, evidence-based story for DWP Digital and the DWP Innovation Lab. Two independent IBM efforts converging on the same A–G framework — infrastructure layer and code layer — validated by the Home Office already having built the infrastructure version.</div></li>
+    <li><span class="rec-tag rc-add">Opportunity</span><div><strong>The DevOps gate is the next concrete step.</strong> A Responsibob EPC check in the CI/CD pipeline — blocking deployments that regress the algorithmic efficiency rating — is achievable today for the GenAI demo (comparing I/O patterns in code review) and aspirationally for SAMCO via IBM DevOps Deploy. This moves Responsibob from report to enforcement.</div></li>
+    <li><span class="rec-tag rc-risk">Risk</span><div><strong>AI-generated code may worsen the 20% layer faster than it improves productivity.</strong> If AI assistants (including Bob) generate algorithmically inefficient code at speed, they accelerate the problem. Responsibob certificates generated at the point of code creation — not just retrospectively — are the mitigation. The certificate should be part of the code review, not a post-hoc audit.</div></li>
+  </ul>
+
+  <!-- ══ POSITIONING ══ -->
+  <div class="slabel">Responsibob Positioning Statement (v4)</div>
+  <div class="callout green">
+    <p><strong>Responsibob is a developer-level code energy efficiency framework</strong> that operates in the "develop efficiently" band of the Defra carbon reduction curve (20% potential saving at DWP scale: ~£200M of a £1B/year ICT estate). It uses a two-axis model — language multiplier (structural, from arXiv 2410.05460) × algorithmic efficiency (variable, improvable) — to produce A–G ratings grounded in real source code evidence.</p>
+    <p><strong>It is complementary to infrastructure-level efficiency frameworks</strong> (Home Office Hosting Cost Efficiency Rating, Turbonomic ARM) and policy-level decisions (design to use less, design &amp; develop nothing). Together these three layers address the full carbon reduction potential across a software estate.</p>
+    <p><strong>The critical constraint is Jevons' Paradox</strong> — but the risk is context-dependent: low for operational systems not at capacity ceiling, higher for GenAI inference where cheaper tokens tend to unlock more usage, negligible for bounded deterministic tasks. Per-transaction certificates must be paired with volume trending to confirm net benefit.</p>
+    <p><strong>The unifying principle:</strong> good engineering and responsible computing are usually the same decision. The value of Responsibob is making that visible — at the point of code creation, in the CI/CD pipeline, and as a certifiable, improvable property of every modernisation engagement.</p>
+  </div>
+
+  <footer>Responsibob Initiative &nbsp;·&nbsp; Made with IBM Bob &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Sources: arXiv 2410.05460 · BCS Responsible Computing · Derek Newton/DWP Oct 2024 · Defra/Ned Gartside · Home Office Immigration Technology · Energy Saving Trust EPC</footer>
+</div>
+</body>
+</html>

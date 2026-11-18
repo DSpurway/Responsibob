@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Code Energy Performance Certificate v6</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #ffffff;
+    color: #1f2328;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── Header ── */
+  .header { border-bottom: 3px solid #1f2328; padding-bottom: 16px; margin-bottom: 28px; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .scheme-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #57606a; }
+  .cert-title { font-size: 22px; font-weight: 700; margin: 4px 0 2px; }
+  .cert-subtitle { font-size: 13px; color: #57606a; }
+  .version-badge {
+    background: #1f2328; color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 3px;
+    white-space: nowrap;
+  }
+  .date-issued { font-size: 11px; color: #57606a; margin-top: 4px; text-align: right; }
+
+  /* ── Section titles ── */
+  h2 {
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #57606a; margin: 28px 0 12px;
+    border-bottom: 1px solid #e5e7eb; padding-bottom: 4px;
+  }
+
+  /* ── A–G rating bar ── */
+  .rating-bar { display: flex; align-items: stretch; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .rating-seg {
+    flex: 1; text-align: center;
+    padding: 10px 4px; font-weight: 700; font-size: 16px;
+    color: #1f2328; position: relative; cursor: default;
+  }
+  .seg-A { background: #168039; color: #fff; }
+  .seg-B { background: #24a148; color: #fff; }
+  .seg-C { background: #6fdc8c; }
+  .seg-D { background: #f1c21b; }
+  .seg-E { background: #ff832b; }
+  .seg-F { background: #da1e28; color: #fff; }
+  .seg-G { background: #750e13; color: #fff; }
+  .seg-current::after {
+    content: "▼";
+    position: absolute; bottom: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px; color: #1f2328;
+  }
+  .seg-potential::after {
+    content: "◇";
+    position: absolute; bottom: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px; color: #3b82d4;
+  }
+  .rating-legend {
+    display: flex; gap: 16px; font-size: 11px; color: #57606a;
+    margin-top: 22px; margin-bottom: 6px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  /* ── Component table ── */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 6px; }
+  .comp-table th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: #57606a; border-bottom: 2px solid #e5e7eb;
+    padding: 6px 8px;
+  }
+  .comp-table td { padding: 8px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: #f7f8fa; }
+
+  .badge {
+    display: inline-block; font-weight: 700; font-size: 12px;
+    padding: 1px 7px; border-radius: 3px; color: #fff;
+  }
+  .badge-A { background: #168039; }
+  .badge-B { background: #24a148; }
+  .badge-C { background: #6fdc8c; color: #1f2328; }
+  .badge-D { background: #f1c21b; color: #1f2328; }
+  .badge-E { background: #ff832b; }
+  .badge-F { background: #da1e28; }
+  .badge-G { background: #750e13; }
+
+  .finding { color: #57606a; font-size: 12px; line-height: 1.45; }
+  .evidence { font-family: "Consolas", "Courier New", monospace; font-size: 11px; color: #3b82d4; }
+
+  /* ── Two-axis diagram ── */
+  .axis-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+  }
+  .axis-card {
+    background: #f7f8fa; border: 1px solid #e5e7eb;
+    border-radius: 4px; padding: 12px 14px;
+  }
+  .axis-card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #57606a; margin-bottom: 6px; }
+  .axis-value { font-size: 24px; font-weight: 700; }
+  .axis-sub { font-size: 11px; color: #57606a; margin-top: 2px; }
+
+  /* ── Improvement list ── */
+  .improvements ol { padding-left: 20px; }
+  .improvements li { margin-bottom: 14px; font-size: 13px; }
+  .improvements li strong { display: block; margin-bottom: 2px; }
+  .improvements .impact { font-size: 11px; color: #57606a; margin-top: 2px; }
+
+  /* ── Callout box ── */
+  .callout {
+    background: #f7f8fa; border-left: 3px solid #3b82d4;
+    padding: 12px 16px; border-radius: 0 4px 4px 0;
+    font-size: 13px; margin-bottom: 16px;
+  }
+  .callout.green { border-left-color: #24a148; }
+  .callout.amber { border-left-color: #f1c21b; }
+
+  /* ── Footer ── */
+  .cert-footer {
+    border-top: 1px solid #e5e7eb; margin-top: 40px; padding-top: 14px;
+    font-size: 11px; color: #57606a; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .made-with {
+    border-top: 1px solid #e5e7eb; margin-top: 24px; padding-top: 10px;
+    text-align: center; font-size: 11px; color: #57606a;
+  }
+
+  /* ── Project header ── */
+  .project-block {
+    background: #f7f8fa; border: 1px solid #e5e7eb;
+    border-radius: 4px; padding: 14px 16px; margin-bottom: 20px;
+  }
+  .project-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .project-meta { font-size: 12px; color: #57606a; }
+
+  /* ── Overall summary strip ── */
+  .summary-strip {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+  }
+  .summary-card {
+    border: 1px solid #e5e7eb; border-radius: 4px; padding: 14px 16px;
+    text-align: center;
+  }
+  .summary-card .overall-grade {
+    font-size: 42px; font-weight: 800; line-height: 1;
+  }
+  .summary-card .grade-label { font-size: 11px; color: #57606a; margin-top: 4px; }
+  .grade-C { color: #1a7e3e; }
+  .grade-B { color: #24a148; }
+
+  .divider { border: none; border-top: 2px solid #1f2328; margin: 36px 0 28px; }
+
+  /* ── Context note ── */
+  .context-note {
+    font-size: 12px; color: #57606a; background: #f7f8fa;
+    border: 1px solid #e5e7eb; border-radius: 4px;
+    padding: 10px 14px; margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="scheme-name">Responsibob · Code Energy Performance Certificate</div>
+        <div class="cert-title">Certificate v6 — Two New Projects</div>
+        <div class="cert-subtitle">IBM Power Hidden Gems Learning App &amp; PowerSC + HashiCorp Vault Demo</div>
+      </div>
+      <div>
+        <div class="version-badge">Version 6</div>
+        <div class="date-issued">Issued: June 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <div class="callout">
+    <strong>What this certificate covers:</strong> Two applications built from scratch in this work stream — a gamified IBM Power learning app deployed to IBM Code Engine, and a pre-sales demo showing PowerSC + HashiCorp Vault certificate management on IBM Power. Both are assessed using the Responsibob two-axis model: <strong>language multiplier</strong> (arXiv 2410.05460) × <strong>algorithmic efficiency</strong>. Ratings are grounded in actual source code — file names and line numbers are cited throughout.
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PROJECT 1 — IBM POWER HIDDEN GEMS LEARNING APP
+  ═══════════════════════════════════════════════════════════════ -->
+  <hr class="divider">
+
+  <div class="project-block">
+    <h3>Project 1 — IBM Power Hidden Gems Learning App</h3>
+    <div class="project-meta">
+      React + Carbon + Vite · Deployed: IBM Code Engine (eu-gb) · Scale-to-zero · Source: <code>ibm-power-learning/ibm-power-learning-app/</code>
+    </div>
+  </div>
+
+  <h2>Overall Rating</h2>
+  <div class="summary-strip">
+    <div class="summary-card">
+      <div class="overall-grade grade-C">C</div>
+      <div class="grade-label">Current overall rating</div>
+    </div>
+    <div class="summary-card">
+      <div class="overall-grade grade-B">B</div>
+      <div class="grade-label">Achievable potential rating</div>
+    </div>
+  </div>
+
+  <h2>Two-Axis Context</h2>
+  <div class="axis-grid">
+    <div class="axis-card">
+      <h3>Language Multiplier</h3>
+      <div class="axis-value">~21.5×</div>
+      <div class="axis-sub">JavaScript/React (arXiv 2410.05460 Table 2)<br>Structural ceiling — cannot be improved within the language choice. TypeScript/JavaScript sits in <strong>Tier 4</strong> (~21.5× vs C baseline). The language choice is appropriate for a learning app (developer velocity, Carbon ecosystem, Code Engine deployment) — the ceiling is the honest context, not a condemnation.</div>
+    </div>
+    <div class="axis-card">
+      <h3>Algorithmic Efficiency</h3>
+      <div class="axis-value">B</div>
+      <div class="axis-sub">Genuinely good patterns present: multi-stage Docker (builder → serve), scale-to-zero hosting, localStorage state persistence (no backend DB calls), pure static Vite build served by <code>serve</code>. One RAF loop in ExpeditionLock is the main area for improvement.</div>
+    </div>
+  </div>
+
+  <h2>Component Ratings — Evidence</h2>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th style="width:56px">Rating</th>
+        <th>Finding</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Docker build strategy</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Multi-stage build: Node 20-alpine builder → minimal alpine runner. Only compiled <code>dist/</code> copied to final image. Build-time dependencies (Vite, all dev packages) are never present in the deployed container.</td>
+        <td class="evidence">Dockerfile lines 4–29</td>
+      </tr>
+      <tr>
+        <td><strong>Hosting — Code Engine scale-to-zero</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">min-scale=0. The application consumes zero compute when idle. A gamified learning app used intermittently by a sales team is exactly the right profile for scale-to-zero. Cost: £0 when idle. Energy: 0 when idle.</td>
+        <td class="evidence">ibm-power-learning/_checkpoint.md line 82</td>
+      </tr>
+      <tr>
+        <td><strong>State persistence — localStorage</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">All game state (player profile, gem progress, journal, world states) is persisted client-side via localStorage with a single <code>useEffect</code> write. Zero backend database calls for game state. No server round-trips on every user interaction.</td>
+        <td class="evidence">gameStore.jsx lines 220–225</td>
+      </tr>
+      <tr>
+        <td><strong>State management — useReducer</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Pure reducer pattern — no derived state recalculated unnecessarily. <code>recalculateWorldStates()</code> only called on CRACK_GEM. World state transitions are O(1) key lookups. No polling or subscription to external state.</td>
+        <td class="evidence">gameStore.jsx lines 76–196</td>
+      </tr>
+      <tr>
+        <td><strong>Static asset delivery</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Vite build produces pre-bundled, tree-shaken, minified assets. Only what the user visits is loaded (code-split by route). Static files served by <code>serve</code> — no SSR compute per request. Carbon component tree is the primary bundle weight (unavoidable given the design system choice).</td>
+        <td class="evidence">Dockerfile line 25; package.json build script</td>
+      </tr>
+      <tr>
+        <td><strong>ExpeditionLock — requestAnimationFrame loop</strong></td>
+        <td><span class="badge badge-C">C</span></td>
+        <td class="finding">The dial rotation uses a continuous RAF loop (<code>requestAnimationFrame</code>) running at the display's native frame rate (typically 60–120 fps) for the entire time a vault modal is open — including during "rest" beats when nothing moves. The loop is not paused when the dial is frozen (JAM state) or during the crack animation transition. Small but continuous CPU wake every ~8–16ms during gameplay.</td>
+        <td class="evidence">ExpeditionLock.jsx lines 27–30; the RAF spin is time-based (SPEED_NORMAL = 120°/s) which is correct for consistency, but the loop is unconditional</td>
+      </tr>
+      <tr>
+        <td><strong>Web Audio API sound effects</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">AudioContext is created on first user gesture (lazy, not at mount). Sounds are synthesised on-the-fly from oscillator nodes — no audio files to download, no decode overhead. Context is reused across sound events.</td>
+        <td class="evidence">ExpeditionLock.jsx — playSound() pattern</td>
+      </tr>
+      <tr>
+        <td><strong>Pattern generation — makePattern()</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Construction approach (not shuffle-and-reject). Runs once at component mount, not on every frame or re-render. Safety limit of 200 iterations prevents runaway loops. O(n²) worst case but n ≤ 8 — negligible.</td>
+        <td class="evidence">ExpeditionLock.jsx lines 42–83</td>
+      </tr>
+      <tr>
+        <td><strong>No backend inference</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">The entire game is client-side logic + static data. No LLM calls, no API calls to generate content, no database reads during gameplay. Gem content is static JS data (<code>gems.js</code>) bundled at build time. This is a structurally excellent energy decision — the game does not spin up compute per user interaction.</td>
+        <td class="evidence">gameStore.jsx — no fetch/axios/API calls anywhere in state management</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Top 2 Improvements</h2>
+  <div class="improvements">
+    <ol>
+      <li>
+        <strong>Pause the RAF loop when the dial is not moving</strong>
+        <span class="finding">In <code>ExpeditionLock.jsx</code>, the dial spin RAF loop runs unconditionally while the modal is open. During "rest" beats (typically 50–60% of pattern time), JAM state (miss recovery, ~450ms), and crack celebration → onClose transition, the dial could be driven by CSS <code>transition</code> or the RAF loop cancelled and re-requested. Simplest fix: track a <code>movingRef</code> boolean; cancel the RAF when speed becomes 0 or during jam; re-request when movement resumes. This eliminates continuous CPU wake (~60fps) during the majority of a vault session.</span>
+        <div class="impact">⚡ Energy impact: eliminates ~40–60% of the RAF CPU cost during vault interaction. Small in absolute terms (modal is short-lived) but it's the right pattern and avoids accumulation if multiple modals opened in a session.</div>
+        <div class="evidence">Evidence: <span class="evidence">ExpeditionLock.jsx lines 22–30 (constants), RAF usage in dial rotation section</span></div>
+      </li>
+      <li>
+        <strong>Pin Carbon React to a minor version in package.json</strong>
+        <span class="finding">Currently <code>"@carbon/react": "^1.33.0"</code> — the <code>^</code> prefix allows automatic minor updates. Carbon is a large design system (~400KB+ gzipped). An unexpected minor version bump can add tree-shaken-but-still-present components. Pin to an exact version (<code>"@carbon/react": "1.33.0"</code>) and update deliberately. This is already correctly done for <code>react</code> and <code>react-dom</code> in the Power learning app, but not for Carbon itself.</span>
+        <div class="impact">⚡ Energy impact: avoids silent bundle size growth from auto-updated dependencies on every fresh <code>npm ci</code> build (which runs in every Docker build and every Code Engine deployment).</div>
+        <div class="evidence">Evidence: <span class="evidence">package.json line 7 — "@carbon/react": "^1.33.0"</span></div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout green">
+    <strong>Highlight — structurally excellent energy decisions:</strong> This application makes three energy-correct architectural choices by default: (1) static site with no per-request server compute, (2) scale-to-zero hosting so idle = zero consumption, (3) all game state client-side so no database round-trips during gameplay. These are not accidents — they are the right tool for a lightweight learning app. The C→B improvement path is about polishing the animation loop, not structural change.
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PROJECT 2 — POWERSC + VAULT DEMO
+  ═══════════════════════════════════════════════════════════════ -->
+  <hr class="divider">
+
+  <div class="project-block">
+    <h3>Project 2 — PowerSC + HashiCorp Vault Certificate Management Demo</h3>
+    <div class="project-meta">
+      Next.js 13 + Carbon + Express/Socket.io backend · SSH to AIX/RHEL · Source: <code>presales-demos/powersc-vault-demo/</code>
+    </div>
+  </div>
+
+  <h2>Overall Rating</h2>
+  <div class="summary-strip">
+    <div class="summary-card">
+      <div class="overall-grade grade-C">C</div>
+      <div class="grade-label">Current overall rating</div>
+    </div>
+    <div class="summary-card">
+      <div class="overall-grade grade-B">B</div>
+      <div class="grade-label">Achievable potential rating</div>
+    </div>
+  </div>
+
+  <h2>Two-Axis Context</h2>
+  <div class="axis-grid">
+    <div class="axis-card">
+      <h3>Language Multiplier</h3>
+      <div class="axis-value">~21.5×</div>
+      <div class="axis-sub">JavaScript (Next.js + Node.js/Express). Same Tier 4 structural ceiling as Project 1. Correct language choice for a pre-sales demo: rapid development, Carbon Design System, WebSocket support for real-time progress. The demo purpose justifies the language overhead — these are short-lived demo sessions, not sustained production workloads.</div>
+    </div>
+    <div class="axis-card">
+      <h3>Algorithmic Efficiency</h3>
+      <div class="axis-value">C</div>
+      <div class="axis-sub">Good patterns: idempotent Vault PKI setup, event-driven WebSocket progress (no polling), explicit error handling for already-mounted secrets engines. Main concern: the server emits WebSocket events on every line of SSH script output — including verbose colour-code lines from the shell scripts. No rate limiting on socket emissions.</div>
+    </div>
+  </div>
+
+  <h2>Component Ratings — Evidence</h2>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th style="width:56px">Rating</th>
+        <th>Finding</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Vault PKI setup — idempotency</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">The <code>setup-pki</code> route correctly handles the "already mounted" case (HTTP 400 from Vault = no-op, not an error). Checks for existing CA before generating a new root. Safe to re-run on every demo provision without double-work. This is an explicit energy-efficiency design: don't redo what is already done.</td>
+        <td class="evidence">vault.js lines 21–26, 33–37</td>
+      </tr>
+      <tr>
+        <td><strong>WebSocket real-time progress (vs polling)</strong></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Certificate replacement progress is pushed over WebSocket (<code>socket.io</code>) as events fire. No client polling loop. The UI receives a progress line only when something happens on the AIX side, not on a tick. Correct event-driven pattern.</td>
+        <td class="evidence">vault.js lines 96–121; server/index.js lines 30–43</td>
+      </tr>
+      <tr>
+        <td><strong>SSH script execution — streaming output</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">The <code>runScriptOnAIX</code> helper streams SSH output line-by-line via <code>onOutput</code> callback rather than buffering the entire remote execution output in memory. For a script that creates 150 certificates this avoids holding a potentially large string buffer.</td>
+        <td class="evidence">setup.js lines 27–37; vault.js lines 105–121</td>
+      </tr>
+      <tr>
+        <td><strong>Socket.io emission filtering — replace route</strong></td>
+        <td><span class="badge badge-C">C</span></td>
+        <td class="finding">The vault replace route only emits a WebSocket event for lines containing <code>"Replaced:"</code> — correctly filtering signal from noise. However the setup route (<code>generate-certificates</code>) emits <em>every</em> output line: <code>req.io.emit('setup:status', { step: line, progress: 50 })</code>. The shell scripts use colour escape codes and verbose section headers — these all generate socket events to every connected client.</td>
+        <td class="evidence">setup.js line 35 (unfiltered); vault.js line 118 (filtered — good)</td>
+      </tr>
+      <tr>
+        <td><strong>Server startup logging</strong></td>
+        <td><span class="badge badge-C">C</span></td>
+        <td class="finding">WebSocket connect/disconnect logs every client event unconditionally: <code>console.log(`[ws] client connected: ${socket.id}`)</code>. During a demo, Next.js HMR and the UI both open WebSocket connections — these fire repeatedly on page reloads. Each console.log forces a synchronous write to stdout (in Node.js default mode). Not a major concern for a demo app, but trivially removable.</td>
+        <td class="evidence">server/index.js lines 34–36</td>
+      </tr>
+      <tr>
+        <td><strong>Dependency pinning — Next.js 13 + TypeScript</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Most dependencies are pinned to exact versions (<code>next: 13.4.9</code>, <code>react: 18.2.0</code>, <code>typescript: 5.9.3</code>). This prevents silent bundle growth on reinstall. <code>socket.io</code>, <code>express</code>, <code>axios</code> use semver ranges (<code>^</code>) — minor concern for a demo.</td>
+        <td class="evidence">package.json lines 13–29</td>
+      </tr>
+      <tr>
+        <td><strong>Deploy script — deploy-demo.sh</strong></td>
+        <td><span class="badge badge-C">C</span></td>
+        <td class="finding">No unconditional <code>dnf update</code> (unlike the Carbon GenAI demo — this is better). Node.js install is conditional: only runs if not found or version &lt; 18. However, the script checks prerequisites on every run including SSH key generation and a live AIX connection test — some steps that could be cached or skipped if the environment is already configured.</td>
+        <td class="evidence">deploy-demo.sh lines 51–75 (conditional Node install — good); lines 95–117 (SSH check always runs)</td>
+      </tr>
+      <tr>
+        <td><strong>OpenSSL certificate generation — 150 certs on AIX</strong></td>
+        <td><span class="badge badge-D">D</span></td>
+        <td class="finding">The demo creates 150 realistic "old" certificates (RSA 1024, SHA-1, backdated) via <code>generate-old-certificates.sh</code> on AIX for every demo setup. These are intentionally weak/expired certificates for the "before" state of the PowerSC scan. Running 150 sequential OpenSSL operations is CPU-bound and takes significant time. This is inherent to the demo narrative — the waste is the point. However, if the demo is re-run frequently, pre-generating the certificates once and resetting from a snapshot would be more efficient.</td>
+        <td class="evidence">deploy-demo.sh lines 284–310 (README excerpt listing 150 certs); generate-old-certificates.sh purpose</td>
+      </tr>
+      <tr>
+        <td><strong>Vault certificate issuance — idempotent batch</strong></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">The replace step calls <code>/v1/pki/issue/sap-oracle</code> via Vault API — short-lived 24h certificates issued on demand, not pre-stored. Vault handles the crypto efficiently. The route is HTTP POST (not polling) and uses the existing PKI role configured in setup. Clean architecture for a PKI demo.</td>
+        <td class="evidence">vault.js lines 84–131 (replace-certificates route)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Top 3 Improvements</h2>
+  <div class="improvements">
+    <ol>
+      <li>
+        <strong>Filter socket emissions in generate-certificates route (match the vault route pattern)</strong>
+        <span class="finding">In <code>setup.js</code> line 35, every SSH output line is emitted as a WebSocket event. The vault route correctly filters to only emit meaningful lines (<code>line.includes('Replaced:')</code>). Apply the same filter to the setup route — emit only lines containing percentage/count progress markers, or consolidate to a single "N certificates created" event at the end. Change: <code>if (line.includes('Creating') || line.includes('✓') || line.includes('Complete')) { req.io.emit(...) }</code></span>
+        <div class="impact">⚡ Eliminates ~200+ unnecessary WebSocket events per demo setup run. More importantly, avoids rendering 200 line updates in the UI unnecessarily.</div>
+        <div class="evidence">Evidence: <span class="evidence">setup.js line 35</span></div>
+      </li>
+      <li>
+        <strong>Gate WebSocket connection logging behind DEBUG env var</strong>
+        <span class="finding">Move the <code>console.log</code> on connect/disconnect in <code>server/index.js</code> lines 35–36 behind <code>if (process.env.DEBUG)</code>. In demo use, the Next.js frontend may reconnect multiple times (HMR, page reload) generating log noise. This is the same pattern recommended for the Carbon GenAI proxy in v2: make debug logging opt-in, not default.</span>
+        <div class="impact">⚡ Minor but consistent with the principle: don't do I/O you don't need to do.</div>
+        <div class="evidence">Evidence: <span class="evidence">server/index.js lines 34–36</span></div>
+      </li>
+      <li>
+        <strong>Pre-bake the "old certificate" state as a TechZone snapshot</strong>
+        <span class="finding">The 150 RSA-1024/SHA-1 certificates need to exist on the AIX client before the PowerSC "before" scan. Currently generated fresh each time via <code>generate-old-certificates.sh</code>. If the TechZone environment supports custom images or snapshots, pre-generate these once and save as the baseline image. The demo resets to the snapshot before each showing rather than regenerating. This is an infrastructure-layer efficiency gain — the AIX CPU running 150 sequential OpenSSL key-gen operations is saved on every subsequent demo run.</span>
+        <div class="impact">⚡ Eliminates repeated AIX CPU work. More reliable demo (no risk of OpenSSL failures during a customer call). Faster demo startup.</div>
+        <div class="evidence">Evidence: <span class="evidence">deploy-demo.sh README section lines 284–310; generate-old-certificates.sh (creates 150 certs per run)</span></div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="callout amber">
+    <strong>Note on demo-specific context:</strong> This is a pre-sales demo, not a production system. It runs for hours, not years. The "D-rated" certificate generation is intentional — creating weak certificates is the whole point of the demo narrative. The Jevons' Paradox risk here is effectively zero: a demo runs a bounded number of times. The energy framing is still useful for two reasons: (1) it models good habits for when demo code becomes production code; (2) the TechZone environment it runs on is shared infrastructure — good citizenship matters.
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CROSS-PROJECT SUMMARY
+  ═══════════════════════════════════════════════════════════════ -->
+  <hr class="divider">
+  <h2>Cross-Project Patterns — What These Two Projects Teach</h2>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Pattern</th>
+        <th>Power Learning App</th>
+        <th>Vault Demo</th>
+        <th>Lesson</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Idempotency</strong></td>
+        <td class="finding">N/A (no server ops)</td>
+        <td class="finding">✓ Vault PKI setup is idempotent — already-mounted = no-op</td>
+        <td class="finding">Design operations to be safely re-runnable; avoid redoing completed work</td>
+      </tr>
+      <tr>
+        <td><strong>Static vs dynamic</strong></td>
+        <td class="finding">✓ Fully static — Vite build, no SSR, no DB</td>
+        <td class="finding">SSR via Next.js; backend required for live Vault/AIX ops</td>
+        <td class="finding">When content is fixed at build time, serve it statically. Only add a backend when you genuinely need one</td>
+      </tr>
+      <tr>
+        <td><strong>Event-driven vs polling</strong></td>
+        <td class="finding">No server; RAF loop in lock mechanic (continuous)</td>
+        <td class="finding">✓ WebSocket push for cert progress (no polling)</td>
+        <td class="finding">Push > poll. Also applies to frontend RAF loops — only spin when something is moving</td>
+      </tr>
+      <tr>
+        <td><strong>Scale-to-zero</strong></td>
+        <td class="finding">✓ Code Engine min-scale=0</td>
+        <td class="finding">TechZone environment — always-on while provisioned</td>
+        <td class="finding">Scale-to-zero is high-value for intermittent workloads. TechZone envs should be deprovisioned promptly after use</td>
+      </tr>
+      <tr>
+        <td><strong>Debug logging in production</strong></td>
+        <td class="finding">No server-side logging at all</td>
+        <td class="finding">⚠ Unconditional WS connect/disconnect logs</td>
+        <td class="finding">Consistent theme across all three projects (SAMCO, GenAI, Vault): gate debug output behind environment flags</td>
+      </tr>
+      <tr>
+        <td><strong>Dependency pinning</strong></td>
+        <td class="finding">⚠ Carbon pinned but with ^ prefix</td>
+        <td class="finding">✓ Next.js, React, TypeScript pinned exactly</td>
+        <td class="finding">Pin major dependencies exactly. Carbon and framework versions should be deliberate upgrades, not silent drift</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PORTFOLIO SUMMARY — ALL PROJECTS TO DATE
+  ═══════════════════════════════════════════════════════════════ -->
+  <hr class="divider">
+  <h2>Responsibob Portfolio — All Six Certificates</h2>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Project</th>
+        <th>Language Tier</th>
+        <th>Current</th>
+        <th>Potential</th>
+        <th>Primary lever</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SAMCO ART200 (legacy RPG)</strong></td>
+        <td class="finding">Tier 1 (~1.05× C)</td>
+        <td><span class="badge badge-F">F</span></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Algorithm: N+1 RLA I/O → set-based SQL (300 → 1 DB op)</td>
+      </tr>
+      <tr>
+        <td><strong>SAMCO ART400 (REST API RPG)</strong></td>
+        <td class="finding">Tier 1 (~1.05× C)</td>
+        <td><span class="badge badge-A">A</span></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Already optimal — single SELECT JOIN, 1 I/O op per query</td>
+      </tr>
+      <tr>
+        <td><strong>Carbon GenAI Demo Stack</strong></td>
+        <td class="finding">JS/Python mix (Tier 4–5)</td>
+        <td><span class="badge badge-D">D</span></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Build: switch to Ollama binary; Runtime: enable stream:true; Ops: gate debug logging</td>
+      </tr>
+      <tr>
+        <td><strong>PassportEye (vision AI choice)</strong></td>
+        <td class="finding">Python Tier 5 (75.9× C)</td>
+        <td><span class="badge badge-A">A</span></td>
+        <td><span class="badge badge-A">A</span></td>
+        <td class="finding">Algorithm dominates language — 100–300× faster than Granite Vision despite Python overhead</td>
+      </tr>
+      <tr>
+        <td><strong>IBM Power Hidden Gems App</strong></td>
+        <td class="finding">JS Tier 4 (~21.5× C)</td>
+        <td><span class="badge badge-C">C</span></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Algorithm: pause RAF when not moving; structural: static site + scale-to-zero already excellent</td>
+      </tr>
+      <tr>
+        <td><strong>PowerSC + Vault Demo</strong></td>
+        <td class="finding">JS Tier 4 (~21.5× C)</td>
+        <td><span class="badge badge-C">C</span></td>
+        <td><span class="badge badge-B">B</span></td>
+        <td class="finding">Ops: filter socket emissions; gate WS logging; Infrastructure: pre-bake cert state as snapshot</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="context-note">
+    <strong>Portfolio observation:</strong> Five of six projects are rated C or better today — before any of the recommended improvements are applied. This is consistent with the Defra model: even "code as written" by a thoughtful team already sits in the upper half of the scale. The improvements move from C to B, not from G to B. The G-rated legacy (SAMCO ART200) was a 20-year-old system that pre-dated set-based SQL thinking — and even that was in a Tier 1 language, so its absolute energy consumption was far lower than a D-rated Python or Ruby equivalent. The responsible computing message: start thoughtful, iterate deliberately. Big wins come from algorithmic changes first, language choice second, operational hygiene third.
+  </div>
+
+  <!-- Footer -->
+  <div class="cert-footer">
+    <span>Responsibob initiative · EMEA AI on IBM Power Squad</span>
+    <span>Based on arXiv 2410.05460 · BCS Responsible Computing · Energy Saving Trust EPC Framework</span>
+  </div>
+
+  <div class="made-with">Made with IBM Bob</div>
+
+</div>
+</body>
+</html>

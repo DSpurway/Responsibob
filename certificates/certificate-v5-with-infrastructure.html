@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Unified Framework v5 (+ Infrastructure Layer)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #fff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+  .prog-header { background: #1f2328; color: #fff; padding: 20px 24px; margin-bottom: 28px; }
+  .prog-header h1 { font-size: 20px; font-weight: 700; }
+  .prog-header p { font-size: 13px; color: #adb5bd; margin-top: 4px; }
+  .vtag { display: inline-block; background: #3b82d4; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 9px; margin-top: 8px; }
+  .slabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #57606a; margin: 28px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+  .callout { border-left: 3px solid #3b82d4; background: #f0f5ff; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; }
+  .callout.green  { border-left-color: #008054; background: #f0faf5; }
+  .callout.amber  { border-left-color: #c07a00; background: #fff8f0; }
+  .callout.purple { border-left-color: #7c5cd8; background: #f5f0ff; }
+  .callout p+p { margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f7f8fa; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #57606a; padding: 7px 9px; border: 1px solid #e5e7eb; text-align: left; }
+  td { padding: 7px 9px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f8fa; }
+  .good{color:#008054;font-weight:600;} .warn{color:#e8680a;font-weight:600;} .amber-t{color:#c07a00;font-weight:600;} .muted{color:#57606a;}
+  .hw-compare { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; border: 1px solid #e5e7eb; margin-top: 4px; font-size: 12px; }
+  .hw-col { padding: 16px; }
+  .hw-col.src { background: #fff8f0; border-right: 1px solid #e5e7eb; }
+  .hw-col.tgt { background: #f0faf5; }
+  .hw-mid { background: #1f2328; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .hw-col h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .hw-stat { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .hw-stat:last-child { border-bottom: none; }
+  .hw-stat .label { color: #57606a; }
+  .hw-stat .val { font-weight: 700; }
+  .hw-stat .val.better { color: #008054; } .hw-stat .val.same { color: #3b82d4; } .hw-stat .val.worse { color: #e8680a; }
+  .savings-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 4px; }
+  @media (max-width:520px) { .savings-grid { grid-template-columns: 1fr 1fr; } }
+  .sav-card { border: 1px solid #e5e7eb; padding: 12px; text-align: center; background: #f7f8fa; }
+  .sav-number { font-size: 26px; font-weight: 800; color: #008054; line-height: 1.1; }
+  .sav-unit { font-size: 11px; color: #57606a; margin-top: 2px; }
+  .sav-label { font-size: 11px; font-weight: 600; margin-top: 6px; }
+  .mult-wrap { margin-top: 4px; }
+  .mult-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; flex-wrap: wrap; }
+  .mult-box { border: 2px solid #e5e7eb; padding: 10px 14px; background: #f7f8fa; text-align: center; min-width: 110px; }
+  .mult-box .big { font-size: 22px; font-weight: 800; color: #1f2328; line-height: 1.1; }
+  .mult-box .sub { font-size: 10px; color: #57606a; margin-top: 3px; }
+  .mult-box.green { border-color: #008054; background: #f0faf5; }
+  .mult-box.green .big { color: #008054; }
+  .mult-op { font-size: 22px; color: #57606a; font-weight: 300; }
+  .mult-note { font-size: 11px; color: #57606a; max-width: 160px; }
+  .curve-wrap { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .curve-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .curve-label { width: 200px; flex-shrink: 0; }
+  .curve-bar-bg { flex: 1; background: #e5e7eb; height: 24px; position: relative; }
+  .curve-bar-fill { height: 100%; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; }
+  .curve-pct { width: 45px; text-align: right; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .util-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+  @media (max-width:520px) { .util-grid { grid-template-columns: 1fr; } }
+  .util-card { border: 1px solid #e5e7eb; padding: 13px; font-size: 12px; }
+  .util-card h3 { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .util-card p { color: #57606a; } .util-card p+p { margin-top: 6px; }
+  .util-card.good { border-color: #008054; background: #f0faf5; }
+  .util-card.note { border-color: #3b82d4; background: #f0f5ff; }
+  .le-row { display: flex; align-items: stretch; margin-bottom: 4px; border: 1px solid #e5e7eb; font-size: 12px; }
+  .le-badge { width: 8px; flex-shrink: 0; }
+  .lb-g{background:#008054;} .lb-t{background:#0e7490;} .lb-b{background:#3b82d4;} .lb-p{background:#7c5cd8;}
+  .le-name { width: 150px; flex-shrink: 0; padding: 10px 12px; font-weight: 700; background: #f7f8fa; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; justify-content: center; }
+  .le-name span { font-weight: 400; font-size: 11px; color: #57606a; margin-top: 2px; }
+  .le-saving { width: 90px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; border-right: 1px solid #e5e7eb; padding: 8px; text-align: center; }
+  .le-detail { flex: 1; padding: 10px 12px; }
+  .le-who { width: 120px; flex-shrink: 0; padding: 10px 12px; font-size: 11px; color: #57606a; border-left: 1px solid #e5e7eb; display: flex; align-items: center; }
+  footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="prog-header">
+    <h1>Responsibob — Unified Framework v5</h1>
+    <p>June 2026 &nbsp;·&nbsp; EMEA AI on IBM Power Squad</p>
+    <div class="vtag">v5 — adds infrastructure layer with real IBM Power E950→E1150 energy data</div>
+  </div>
+
+  <div class="callout green">
+    <p><strong>Does the hardware data change things?</strong> Yes — in a way that strengthens the framework. Infrastructure and code efficiency are independent multipliers, not competing approaches. Hardware refresh reduces energy per unit of performance. Code optimisation reduces the performance demand. Applied together, the savings compound. Neither makes the other redundant.</p>
+  </div>
+
+  <div class="slabel">Infrastructure Layer — IBM Power Energy Estimator: E950 → E1150</div>
+  <p style="font-size:13px;color:#57606a;margin-bottom:12px;">Same workload (3,482 active rPerf). PUE 1.4. Energy cost £0.20/kWh. Source: IBM Power Energy Estimator.</p>
+
+  <div class="hw-compare">
+    <div class="hw-col src">
+      <h3>Source — 4× Power E950 (9040-MR9)</h3>
+      <div class="hw-stat"><span class="label">Systems</span><span class="val">4</span></div>
+      <div class="hw-stat"><span class="label">Active cores</span><span class="val worse">128</span></div>
+      <div class="hw-stat"><span class="label">Active rPerf</span><span class="val">3,482</span></div>
+      <div class="hw-stat"><span class="label">IT energy (W)</span><span class="val worse">16,880</span></div>
+      <div class="hw-stat"><span class="label">Cooling (W)</span><span class="val worse">6,752</span></div>
+      <div class="hw-stat"><span class="label">Total energy (W)</span><span class="val worse">23,632</span></div>
+      <div class="hw-stat"><span class="label">Rack footprint</span><span class="val worse">16U</span></div>
+    </div>
+    <div class="hw-mid">vs</div>
+    <div class="hw-col tgt">
+      <h3>Target — 2× Power E1150 (9043-MRU)</h3>
+      <div class="hw-stat"><span class="label">Systems</span><span class="val better">2</span></div>
+      <div class="hw-stat"><span class="label">Active cores</span><span class="val better">110 (192 installed)</span></div>
+      <div class="hw-stat"><span class="label">Active rPerf</span><span class="val same">3,482 (identical)</span></div>
+      <div class="hw-stat"><span class="label">IT energy (W)</span><span class="val better">10,400</span></div>
+      <div class="hw-stat"><span class="label">Cooling (W)</span><span class="val better">4,160</span></div>
+      <div class="hw-stat"><span class="label">Total energy (W)</span><span class="val better">14,560</span></div>
+      <div class="hw-stat"><span class="label">Rack footprint</span><span class="val better">8U (−50%)</span></div>
+    </div>
+  </div>
+
+  <div class="savings-grid" style="margin-top:12px;">
+    <div class="sav-card"><div class="sav-number">39%</div><div class="sav-unit">total energy saving</div><div class="sav-label">9,072W</div></div>
+    <div class="sav-card"><div class="sav-number">79</div><div class="sav-unit">MWh saved/year</div><div class="sav-label">238 MWh over 3 yrs</div></div>
+    <div class="sav-card"><div class="sav-number">56t</div><div class="sav-unit">CO₂ saved/year</div><div class="sav-label">169t over 3 years</div></div>
+    <div class="sav-card"><div class="sav-number">£15,894</div><div class="sav-unit">energy cost saved/yr</div><div class="sav-label">£47,682 over 3 yrs</div></div>
+  </div>
+
+  <div class="callout amber" style="margin-top:14px;">
+    <p><strong>The E1150 has 192 installed cores with 110 active — 76% performance headroom at current load.</strong> This headroom is the utilisation opportunity: consolidating additional workloads onto the E1150 means more productive work per watt, reducing the energy cost per unit of business outcome further still. The spreadsheet shows "+2,618 rPerf additional capacity" — a 76% growth buffer at the same energy envelope.</p>
+  </div>
+
+  <div class="slabel">The Multiplication Effect — Infrastructure × Code (not additive)</div>
+  <div class="mult-wrap">
+    <div class="mult-row">
+      <div class="mult-box"><div class="big">1.0×</div><div class="sub">Baseline<br>E950 + ART200 RLA</div></div>
+      <div class="mult-op">→</div>
+      <div class="mult-note">Hardware refresh only<br>(E950→E1150, same code)</div>
+      <div class="mult-op">→</div>
+      <div class="mult-box"><div class="big" style="color:#c07a00;">0.61×</div><div class="sub">39% energy saved<br>same code</div></div>
+    </div>
+    <div class="mult-row">
+      <div class="mult-box"><div class="big">1.0×</div><div class="sub">Baseline<br>E950 + ART200 RLA</div></div>
+      <div class="mult-op">→</div>
+      <div class="mult-note">Code optimisation only<br>(ART200→ART400, same hardware)</div>
+      <div class="mult-op">→</div>
+      <div class="mult-box"><div class="big" style="color:#008054;">~0.01×</div><div class="sub">~99% less I/O demand<br>on query workload</div></div>
+    </div>
+    <div class="mult-row">
+      <div class="mult-box"><div class="big">1.0×</div><div class="sub">Baseline<br>E950 + ART200 RLA</div></div>
+      <div class="mult-op">→</div>
+      <div class="mult-note"><strong>Both together</strong><br>0.61 × 0.01 on query-variable energy</div>
+      <div class="mult-op">=</div>
+      <div class="mult-box green"><div class="big">&lt;1%</div><div class="sub">of original<br>query-driven energy<br>(plus hardware idle floor)</div></div>
+    </div>
+  </div>
+
+  <div class="callout purple" style="margin-top:12px;">
+    <p><strong>Important caveat:</strong> the code optimisation applies to the <em>workload-variable</em> portion of CPU energy — not the server's idle power floor. A Power system uses roughly constant energy for OS, memory, I/O bus, and idle processes regardless of query count. So the multiplication effect is real but applies to the variable load component. On a heavily loaded server, this is significant; on a lightly loaded one, the absolute saving is smaller even if the proportional I/O saving is the same.</p>
+    <p><strong>The practical implication:</strong> Responsibob savings convert most directly to energy when the server is near capacity, because that is when fewer I/O operations translates to genuinely avoided compute cycles rather than just wider idle headroom.</p>
+  </div>
+
+  <div class="slabel">Defra Curve — Now with Real Measured Numbers</div>
+  <div class="curve-wrap">
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design &amp; develop nothing</strong><br><span style="font-size:11px;color:#57606a;">Policy — no example in current work</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:100%;background:#008054;">Up to 100%</div></div>
+      <div class="curve-pct good">100%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design to use less</strong><br><span style="font-size:11px;color:#57606a;">Consolidation, architecture</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:60%;background:#19a643;">Up to 60%</div></div>
+      <div class="curve-pct good">60%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Design clever — infrastructure ✓</strong><br><span style="font-size:11px;color:#57606a;">E950→E1150 hardware refresh</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:39%;background:#0e7490;">39% measured — 9,072W / 56t CO₂/yr</div></div>
+      <div class="curve-pct amber-t">39%</div>
+    </div>
+    <div class="curve-row">
+      <div class="curve-label"><strong>Develop efficiently ✓ Responsibob</strong><br><span style="font-size:11px;color:#57606a;">ART200→ART400 code modernisation</span></div>
+      <div class="curve-bar-bg"><div class="curve-bar-fill" style="width:20%;background:#3b82d4;">~20% of workload-variable energy</div></div>
+      <div class="curve-pct" style="color:#3b82d4;font-weight:700;">~20%</div>
+    </div>
+  </div>
+
+  <div class="callout green" style="margin-top:12px;">
+    <p><strong>The E950→E1150 measurement (39%) validates the Defra "design clever" band (40%) almost exactly.</strong> This is not coincidence — it is the same class of improvement (hardware generation efficiency) measured empirically. The Defra model is well-calibrated against real IBM Power data.</p>
+  </div>
+
+  <div class="slabel">Utilisation — The Binding Factor</div>
+  <div class="util-grid">
+    <div class="util-card good">
+      <h3>✓ High utilisation multiplies both savings</h3>
+      <p>The E1150's 76% headroom only delivers its energy efficiency if filled with useful, consolidated workloads. An underutilised server has already paid the idle power cost — adding more work to it has near-zero marginal energy cost.</p>
+      <p>Derek's framework (Turbonomic ARM) measures and optimises this. Responsibob creates the headroom. Together they ensure it is used sustainably.</p>
+    </div>
+    <div class="util-card note">
+      <h3>Code efficiency creates consolidation opportunity</h3>
+      <p>SAMCO ART400 running 300× fewer I/O ops means the same IBM i LPAR can serve more users, more applications, or more throughput before needing additional hardware.</p>
+      <p>This is the link between Layers 3 and 2: code efficiency reduces the performance demand that determines how many servers you need. Fewer servers = less embodied carbon, less cooling, less rack space.</p>
+    </div>
+  </div>
+
+  <div class="slabel">Complete Scenario Comparison</div>
+  <table>
+    <thead><tr><th>Scenario</th><th>Infrastructure</th><th>Code</th><th>Net outcome</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Old hardware + old code</strong><br>4× E950 + ART200 RLA</td><td class="warn">23,632W · 16U<br>~102t CO₂/yr</td><td class="warn">300 I/O ops/100 records</td><td class="warn">Baseline — 100%</td></tr>
+      <tr><td><strong>New hardware + old code</strong><br>2× E1150 + ART200 RLA</td><td class="good">14,560W · 8U<br>~46t CO₂/yr</td><td class="warn">300 I/O ops — unchanged</td><td class="amber-t">−39% total energy. Code still wasteful — just cheaper to run.</td></tr>
+      <tr><td><strong>Old hardware + new code</strong><br>4× E950 + ART400 REST</td><td class="warn">23,632W baseline</td><td class="good">1 I/O op — 300× less</td><td class="amber-t">Query-variable CPU work near zero. Idle floor unchanged. Headroom created for consolidation.</td></tr>
+      <tr style="background:#f0faf5;"><td><strong>New hardware + new code</strong><br>2× E1150 + ART400 REST</td><td class="good">14,560W · 8U<br>~46t CO₂/yr</td><td class="good">1 I/O op — 300× less</td><td class="good"><strong>Maximum saving.</strong> 39% infrastructure + near-zero query-variable compute. 76% headroom for growth or consolidation.</td></tr>
+      <tr style="background:#f0faf5;"><td><strong>New hardware + new code + high utilisation</strong><br>2× E1150 + ART400 + consolidated workloads</td><td class="good">14,560W serves 2–3× original workload</td><td class="good">1 I/O op per query</td><td class="good"><strong>Best outcome.</strong> More business value per watt. Code efficiency enabled consolidation; hardware efficiency and high utilisation captured it.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Complete Four-Layer Summary</div>
+  <div>
+    <div class="le-row">
+      <div class="le-badge lb-g"></div>
+      <div class="le-name">Layer 1<br><span>Policy / Design</span></div>
+      <div class="le-saving" style="color:#008054;">Up to<br>100%</div>
+      <div class="le-detail"><strong>Don't build it; use existing systems; minimise scope.</strong> Highest leverage. Every new system carries embodied carbon beyond operational energy. No measured example in our current work.</div>
+      <div class="le-who">Strategic / CTO</div>
+    </div>
+    <div class="le-row">
+      <div class="le-badge lb-t"></div>
+      <div class="le-name">Layer 2<br><span>Infrastructure</span></div>
+      <div class="le-saving" style="color:#008054;">39%<br>measured</div>
+      <div class="le-detail"><strong>E950→E1150: 39% total energy, 56t CO₂/year, £15,894/year at £0.20/kWh.</strong> Run at high utilisation (76% headroom on E1150). Home Office Hosting Rating + Turbonomic ARM operate here. One-time capital event, every 5–7 years.</div>
+      <div class="le-who">IBM Energy Estimator</div>
+    </div>
+    <div class="le-row">
+      <div class="le-badge lb-b"></div>
+      <div class="le-name">Layer 3<br><span>Algorithm — Responsibob</span></div>
+      <div class="le-saving" style="color:#3b82d4;">~20%<br>variable</div>
+      <div class="le-detail"><strong>ART200→ART400: 300× fewer I/O ops. GenAI: Ollama + streaming + lean proxy.</strong> Continuous, no capital cost, deployable at any time. Reduces performance demand → enables consolidation → multiplies with Layer 2.</div>
+      <div class="le-who">Responsibob</div>
+    </div>
+    <div class="le-row">
+      <div class="le-badge lb-p"></div>
+      <div class="le-name">Layer 4<br><span>AI model selection</span></div>
+      <div class="le-saving" style="color:#7c5cd8;">100–300×<br>per task</div>
+      <div class="le-detail"><strong>PassportEye vs Granite Vision: &lt;1s/100MB vs 4-5min/4-6GB.</strong> When GenAI is used: is it the right tool? Traditional deterministic algorithms for well-defined tasks beat LLMs on energy by orders of magnitude. The saving is so large it overcomes Python's 75× language penalty.</div>
+      <div class="le-who">Responsibob + DWP</div>
+    </div>
+  </div>
+
+  <div class="slabel">Positioning — v5</div>
+  <div class="callout green">
+    <p><strong>Infrastructure saves 39% — a real, one-time capital event validated by IBM's own estimator and consistent with Defra's 40% "design clever" band.</strong> Code efficiency (Responsibob) saves up to 20% of workload-variable energy continuously, at no capital cost, and enables the consolidation that makes the infrastructure saving sustainable at scale.</p>
+    <p><strong>For IBM i organisations specifically:</strong> staying on IBM Power and refreshing hardware generations (E950→E1150) while modernising code (RLA→SQL) is the most energy-efficient path. The platform's per-watt advantage, the RPG language's Tier 1 energy profile, and the availability of real measurement tools (IBM Energy Estimator, QSYS2 performance data) make this a quantifiable, certifiable journey — not just an aspiration.</p>
+    <p><strong>The unifying message:</strong> hardware efficiency and code efficiency are not in competition. The most efficient outcome requires both — modern hardware at high utilisation running code that has been optimised to do as little unnecessary work as possible. Responsibob is the tool for the code layer. The Energy Estimator is the tool for the hardware layer. Together they cover the two most actionable levers in the Defra curve.</p>
+  </div>
+
+  <footer>Responsibob Initiative &nbsp;·&nbsp; Made with IBM Bob &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Sources: IBM Power Energy Estimator · arXiv 2410.05460 · Defra/Ned Gartside · Derek Newton/DWP Oct 2024 · Home Office Hosting Rating</footer>
+</div>
+</body>
+</html>

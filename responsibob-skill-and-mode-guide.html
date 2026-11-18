@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Skill &amp; Mode Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    background: #ffffff;
+    color: #1f2328;
+  }
+  .page { max-width: 760px; margin: 0 auto; padding: 36px 24px 48px; }
+
+  .header { margin-bottom: 32px; border-bottom: 3px solid #1f2328; padding-bottom: 20px; }
+  .header-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #57606a; margin-bottom: 6px; }
+  .header-title { font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+  .header-subtitle { font-size: 14px; color: #57606a; }
+
+  h2 {
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: #57606a; margin: 36px 0 14px;
+    border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;
+  }
+  h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+
+  .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  .card {
+    border: 1px solid #e5e7eb; border-radius: 6px;
+    padding: 18px 20px; background: #f7f8fa;
+  }
+  .card.blue { border-left: 4px solid #3b82d4; }
+  .card.purple { border-left: 4px solid #7c5cd8; }
+  .card .card-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #57606a; margin-bottom: 6px;
+  }
+  .card .card-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .card p { font-size: 13px; color: #3b4149; line-height: 1.55; }
+
+  .diff-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 6px; }
+  .diff-table th {
+    text-align: left; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #57606a; border-bottom: 2px solid #e5e7eb; padding: 7px 10px;
+  }
+  .diff-table td { padding: 9px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table tr:hover td { background: #f7f8fa; }
+  .dim { color: #57606a; font-size: 12px; }
+
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+  .step-num {
+    counter-increment: step;
+    min-width: 30px; height: 30px;
+    background: #1f2328; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+  .step-body { flex: 1; }
+  .step-body strong { display: block; font-size: 14px; margin-bottom: 3px; }
+  .step-body p { font-size: 13px; color: #3b4149; }
+  .step-body code {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px; background: #eef0f3;
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  .trigger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .trigger-item {
+    background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 4px;
+    padding: 10px 12px; font-size: 13px;
+  }
+  .trigger-item .trig-type { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #57606a; margin-bottom: 3px; }
+  .trigger-item .trig-example { font-style: italic; color: #3b4149; }
+
+  .callout {
+    background: #f7f8fa; border-left: 3px solid #3b82d4;
+    padding: 12px 16px; border-radius: 0 4px 4px 0;
+    font-size: 13px; margin-bottom: 16px;
+  }
+  .callout.green { border-left-color: #24a148; }
+
+  .file-box {
+    background: #1f2328; color: #c9d1d9;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px; padding: 10px 14px; border-radius: 4px;
+    margin-bottom: 8px; line-height: 1.8;
+  }
+  .file-box span { color: #79c0ff; }
+
+  .output-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+  .output-card { border: 1px solid #e5e7eb; border-radius: 4px; padding: 12px 14px; }
+  .output-card .oc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #57606a; margin-bottom: 4px; }
+  .output-card p { font-size: 12px; color: #3b4149; line-height: 1.5; }
+
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 12px; }
+  .badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 3px; color: #fff; }
+  .badge-A { background: #168039; }
+  .badge-B { background: #24a148; }
+  .badge-C { background: #6fdc8c; color: #1f2328; }
+  .badge-D { background: #f1c21b; color: #1f2328; }
+  .badge-E { background: #ff832b; }
+  .badge-F { background: #da1e28; }
+  .badge-G { background: #750e13; }
+
+  hr.divider { border: none; border-top: 2px solid #1f2328; margin: 40px 0 32px; }
+
+  .made-with {
+    border-top: 1px solid #e5e7eb; margin-top: 40px; padding-top: 12px;
+    text-align: center; font-size: 11px; color: #57606a;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow">Responsibob — Team Reference Guide</div>
+    <div class="header-title">The Responsibob Skill &amp; Mode</div>
+    <div class="header-subtitle">What they are, the difference between them, and how to use them in Bob</div>
+  </div>
+
+  <h2>What Is Responsibob?</h2>
+  <p style="font-size:13px; color:#3b4149; margin-bottom:16px;">
+    Responsibob is a framework — baked into Bob — for treating <strong>code energy efficiency as something measurable, certifiable, and improvable</strong>. It applies an EPC-style A–G rating (like an energy performance certificate for a building) to software, grounded in real source code evidence. The ratings are based on two independent things: the inherent energy cost of the programming language chosen, and how efficient the actual algorithms and patterns in the code are.
+  </p>
+  <div class="badge-row">
+    <span class="badge badge-A">A</span>
+    <span class="badge badge-B">B</span>
+    <span class="badge badge-C">C</span>
+    <span class="badge badge-D">D</span>
+    <span class="badge badge-E">E</span>
+    <span class="badge badge-F">F</span>
+    <span class="badge badge-G">G</span>
+  </div>
+  <p style="font-size:12px; color:#57606a; margin-bottom:8px;">A = excellent / G = very poor — same scale as a home energy performance certificate, applied to code.</p>
+
+  <h2>Two Artefacts — What Was Built</h2>
+  <div class="card-row">
+    <div class="card blue">
+      <div class="card-label">Artefact 1</div>
+      <div class="card-title">The Skill</div>
+      <p>A set of instructions that Bob loads when it needs to do a Responsibob assessment. Think of it as a detailed procedure book — it tells Bob exactly how to rate code, which reference data to use, and how to structure a certificate. It works <em>inside any mode</em>.</p>
+    </div>
+    <div class="card purple">
+      <div class="card-label">Artefact 2</div>
+      <div class="card-title">The Mode</div>
+      <p>A persistent persona that keeps energy efficiency front of mind <em>throughout an entire task</em> — not just when you ask for a certificate. Bob is always Responsibob: flagging language choices, spotting inefficiency as it reads code, and suggesting the lightest appropriate tool at every decision point.</p>
+    </div>
+  </div>
+
+  <h2>The Key Difference — Skill vs Mode</h2>
+  <table class="diff-table">
+    <thead>
+      <tr>
+        <th style="width:26%">Question</th>
+        <th>Skill</th>
+        <th>Mode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>What does it do?</strong></td>
+        <td>Gives Bob a detailed step-by-step procedure for generating energy certificates and energy advice</td>
+        <td>Gives Bob a persistent energy-aware personality for the whole session</td>
+      </tr>
+      <tr>
+        <td><strong>When does it activate?</strong></td>
+        <td>On demand — Bob loads it when an energy-related word appears, or when you activate it explicitly</td>
+        <td>From the moment you select it — it stays active until you switch mode</td>
+      </tr>
+      <tr>
+        <td><strong>What mode do you need?</strong></td>
+        <td>Any mode (Agent, Plan, Ask, etc.) — the skill works everywhere</td>
+        <td>You switch <em>to</em> Responsibob mode via the mode picker</td>
+      </tr>
+      <tr>
+        <td><strong>Best used when…</strong></td>
+        <td>You want a one-off certificate for a specific piece of code, or quick energy advice mid-task</td>
+        <td>You're starting a task where energy efficiency should shape every decision from the start</td>
+      </tr>
+      <tr>
+        <td><strong>Analogy</strong></td>
+        <td class="dim">A specialist consultant you call in for a specific review</td>
+        <td class="dim">A team member who is always thinking about energy and speaks up as you go</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h2>How to Use — The Skill</h2>
+
+  <div class="callout">
+    <strong>The skill activates automatically</strong> when you use words like <em>energy, efficiency, sustainability, carbon, green code, responsible computing,</em> or <em>EPC</em> in any conversation. You can also activate it explicitly by saying: <strong>"Use the Responsibob skill."</strong>
+  </div>
+
+  <p style="font-size:13px; color:#3b4149; margin-bottom:20px;">Here are the things you can ask the skill to do:</p>
+
+  <div class="trigger-grid">
+    <div class="trigger-item">
+      <div class="trig-type">Generate a certificate</div>
+      <div class="trig-example">"Can you give me a Responsibob EPC for this codebase?"</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Review a language choice</div>
+      <div class="trig-example">"We're thinking of using Python for this — what's the energy angle?"</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Spot inefficiency in code</div>
+      <div class="trig-example">"Is there anything inefficient in this RPG program from an energy perspective?"</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Compare two approaches</div>
+      <div class="trig-example">"Which is more energy efficient — streaming the tokens or buffering the full response?"</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Ongoing advisory</div>
+      <div class="trig-example">"As we build this, flag anything that looks like it'll be wasteful."</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Infrastructure context</div>
+      <div class="trig-example">"We're on IBM Power — what does that mean for our energy baseline?"</div>
+    </div>
+  </div>
+
+  <p style="font-size:13px; color:#3b4149; margin-top:16px; margin-bottom:8px;"><strong>What the skill contains:</strong></p>
+  <p style="font-size:13px; color:#3b4149; margin-bottom:16px;">
+    Two files live at <code>.bob/skills/responsibob/</code> in the team workspace. The skill procedure file (<code>SKILL.md</code>) is a 7-step process Bob follows: understand what is being assessed → look up language multipliers → assess algorithmic efficiency → combine the two axes → position on the Defra curve → check for Jevons' Paradox risk → produce the output. The reference data file (<code>reference-data.md</code>) holds all the numbers Bob uses — the language energy table, Defra curve, IBM Power hardware data, and Jevons' risk table — so Bob does not guess or reason them from scratch each time.
+  </p>
+
+  <div class="file-box">
+    <span>.bob/skills/responsibob/</span><br>
+    ├── SKILL.md          <span style="color:#8b949e;">← 7-step procedure: how to run an assessment</span><br>
+    └── reference-data.md <span style="color:#8b949e;">← language multipliers, Defra curve, IBM Power data</span>
+  </div>
+
+  <hr class="divider">
+
+  <h2>How to Use — The Mode</h2>
+
+  <p style="font-size:13px; color:#3b4149; margin-bottom:20px;">
+    The Responsibob mode is available in Bob's mode picker. Select it at the <em>start</em> of a task when you want energy to be a first-class consideration throughout — not just retrospectively.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Open the mode picker in Bob</strong>
+        <p>Look for the mode selector in the Bob interface (usually bottom-left of the chat panel). Click it to see available modes.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Select "Responsibob"</strong>
+        <p>It appears in the list as <code>Responsibob</code>. Selecting it switches Bob into the energy-aware persona for the duration of the task.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Work normally — Bob will surface the energy angle</strong>
+        <p>You don't have to keep asking. As Bob reads code or discusses design choices, it will note language tiers, flag inefficiency patterns, suggest lighter alternatives, and position things on the Defra curve. It will not be preachy — it surfaces the energy angle and moves on.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Ask for a certificate at any point</strong>
+        <p>At any stage you can say "give me a Responsibob certificate for what we've built so far" and Bob will produce an A–G HTML certificate grounded in the actual code it has been working on.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:13px; color:#57606a; margin-bottom:14px;"><strong>When is Responsibob mode the right choice?</strong></p>
+  <div class="trigger-grid">
+    <div class="trigger-item">
+      <div class="trig-type">IBM i modernisation</div>
+      <div class="trig-example">Rewriting RPG code — energy efficiency of the before/after should be part of the story</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Building a GenAI application</div>
+      <div class="trig-example">Model choice, streaming, build pipeline — all have energy implications from the start</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Platform or language selection</div>
+      <div class="trig-example">Comparing approaches where the energy multiplier of each language matters</div>
+    </div>
+    <div class="trigger-item">
+      <div class="trig-type">Customer or stakeholder work</div>
+      <div class="trig-example">When responsible computing is part of the narrative (DWP, Defra, ESG-conscious customers)</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>What a Certificate Looks Like</h2>
+  <p style="font-size:13px; color:#3b4149; margin-bottom:16px;">
+    Every certificate produced by the skill or mode follows the same structure, delivered as a shareable HTML file:
+  </p>
+
+  <div class="output-row">
+    <div class="output-card">
+      <div class="oc-label">Two-axis model</div>
+      <p>Rates <strong>language</strong> (structural — how efficient is this programming language at the hardware level?) and <strong>algorithm</strong> (variable — is the code doing the least unnecessary work?) independently, then combines them.</p>
+    </div>
+    <div class="output-card">
+      <div class="oc-label">A–G overall rating</div>
+      <p>A single current rating and a potential rating — what is achievable with specific named changes. Like an EPC: "Current: D. Potential: B."</p>
+    </div>
+    <div class="output-card">
+      <div class="oc-label">Evidence-grounded findings</div>
+      <p>Every rating is backed by a specific file name and line number in the actual code. No estimates, no generalities — Bob reads the source and cites it.</p>
+    </div>
+    <div class="output-card">
+      <div class="oc-label">Ordered improvements</div>
+      <p>The top improvements ranked by energy impact, each with the specific code change needed and the file it applies to.</p>
+    </div>
+    <div class="output-card">
+      <div class="oc-label">Defra curve position</div>
+      <p>Where this work sits in the four-layer framework: Policy (100%) → Infrastructure (40%) → Code/Algorithm (20%) → AI model selection. Honest about what code efficiency can and cannot do.</p>
+    </div>
+    <div class="output-card">
+      <div class="oc-label">Jevons' Paradox context</div>
+      <p>A nuanced, context-specific note on whether efficiency gains risk being consumed by increased usage — differentiated by type of system, not a blanket warning.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>The Framework in Brief — Two Axes</h2>
+
+  <div class="card-row">
+    <div class="card blue">
+      <div class="card-label">Axis 1 — Language Multiplier</div>
+      <h3>Structural. Fixed.</h3>
+      <p style="font-size:12px; margin-top:6px;">Based on the arXiv 2410.05460 study. C and RPG are near-identical at ~1× the baseline. TypeScript is ~21.5× more expensive. Python is ~76×. This cannot be changed without changing language — it is the floor, not the ceiling. It is honest context, not a reason to avoid a language if it is the right tool.</p>
+    </div>
+    <div class="card purple">
+      <div class="card-label">Axis 2 — Algorithmic Efficiency</div>
+      <h3>Variable. Improvable.</h3>
+      <p style="font-size:12px; margin-top:6px;">How much unnecessary work does the code do? N+1 database queries, buffering a full AI response when streaming would do, compiling software from source on every deployment, verbose debug logging on every request — these are the patterns that move a rating from A to F. And they are all fixable.</p>
+    </div>
+  </div>
+
+  <div class="callout green" style="margin-top:16px;">
+    <strong>The key insight:</strong> A perfectly efficient algorithm in a "bad" language can still beat a wasteful algorithm in a "good" language — when the compute volumes differ by orders of magnitude. The PassportEye example from our own codebase: a Python OCR function that runs in milliseconds beats a large C++ language model at 100–300× lower energy, despite Python being 76× more expensive per operation — because choosing the right algorithm eliminated 99%+ of the work. <strong>Algorithm first. Language second. Operations third.</strong>
+  </div>
+
+  <hr class="divider">
+
+  <h2>Files to Share with the Team</h2>
+
+  <p style="font-size:13px; color:#3b4149; margin-bottom:14px;">
+    These three files together are everything needed to install Responsibob into a Bob workspace:
+  </p>
+
+  <div class="file-box">
+    <span style="color:#8b949e;">── Skill files (copy to team workspace)</span><br>
+    .bob/skills/responsibob/<span style="color:#79c0ff;">SKILL.md</span>
+    <span style="color:#8b949e; margin-left:8px;">← the procedure Bob follows</span><br>
+    .bob/skills/responsibob/<span style="color:#79c0ff;">reference-data.md</span>
+    <span style="color:#8b949e; margin-left:8px;">← the reference numbers and tables</span><br>
+    <br>
+    <span style="color:#8b949e;">── Mode (append to custom_modes.yaml)</span><br>
+    C:/Users/&lt;username&gt;/.bob/settings/<span style="color:#79c0ff;">custom_modes.yaml</span>
+    <span style="color:#8b949e; margin-left:8px;">← add the responsibob mode entry</span>
+  </div>
+
+  <p style="font-size:13px; color:#3b4149; margin-top:12px;">
+    The skill files go in <code>.bob/skills/responsibob/</code> inside the shared workspace. The mode entry goes in each team member's personal <code>custom_modes.yaml</code> — this is a per-user Bob settings file. Share the <code>responsibob</code> YAML block from the bottom of the file and ask each person to append it to their own copy.
+  </p>
+
+  <div class="made-with">Made with IBM Bob</div>
+
+</div>
+</body>
+</html>

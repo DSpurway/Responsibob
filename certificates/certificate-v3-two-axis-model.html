@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsibob — Framework v3: Two-Axis Model</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #fff; padding: 32px 16px 48px; }
+  .page { max-width: 760px; margin: 0 auto; }
+  .prog-header { background: #1f2328; color: #fff; padding: 20px 24px; margin-bottom: 28px; }
+  .prog-header h1 { font-size: 20px; font-weight: 700; }
+  .prog-header p { font-size: 13px; color: #adb5bd; margin-top: 4px; }
+  .slabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #57606a; margin: 28px 0 10px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+  .callout { border-left: 3px solid #3b82d4; background: #f0f5ff; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; }
+  .callout.green { border-left-color: #008054; background: #f0faf5; }
+  .callout.amber { border-left-color: #c07a00; background: #fff8f0; }
+  .callout p+p { margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f7f8fa; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #57606a; padding: 7px 9px; border: 1px solid #e5e7eb; text-align: left; }
+  td { padding: 7px 9px; border: 1px solid #e5e7eb; vertical-align: middle; }
+  tr:nth-child(even) td { background: #f7f8fa; }
+  .good{color:#008054;font-weight:600;} .warn{color:#e8680a;font-weight:600;} .amber-t{color:#c07a00;font-weight:600;} .muted{color:#57606a;}
+  .mini-bar-bg{background:#e5e7eb;height:10px;width:100%;}
+  .mini-bar-fill{height:10px;}
+  .tier{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;color:#fff;white-space:nowrap;}
+  .t1{background:#008054;} .t2{background:#19a643;} .t3{background:#8dc21f;color:#1f2328;} .t4{background:#ffd500;color:#1f2328;} .t5{background:#f4aa00;color:#1f2328;} .t6{background:#e8680a;} .t7{background:#c8181f;}
+  .rbadge{display:inline-flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;width:36px;height:36px;flex-shrink:0;}
+  .rb-a{background:#008054;} .rb-b{background:#19a643;} .rb-c{background:#8dc21f;color:#1f2328;} .rb-d{background:#ffd500;color:#1f2328;} .rb-e{background:#f4aa00;color:#1f2328;} .rb-f{background:#e8680a;} .rb-g{background:#c8181f;}
+  .axis-grid { display: grid; grid-template-columns: 120px 1fr 1fr 1fr; border: 1px solid #e5e7eb; font-size: 12px; margin-top: 4px; }
+  .ag-header { background: #1f2328; color: #fff; padding: 8px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; border-right: 1px solid #444; }
+  .ag-header:last-child { border-right: none; }
+  .ag-row-label { background: #f7f8fa; padding: 10px; font-size: 11px; font-weight: 700; border-top: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; display: flex; align-items: center; }
+  .ag-cell { padding: 10px; border-top: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; font-size: 12px; }
+  .ag-cell:last-child { border-right: none; }
+  .ag-cell.hl { background: #f0f5ff; }
+  .ag-cell.hl-g { background: #f0faf5; }
+  .cell-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .cell-note { font-size: 11px; color: #57606a; margin-top: 2px; }
+  .ceil-wrap { margin-top: 4px; }
+  .ceil-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 12px; }
+  .ceil-label { width: 200px; flex-shrink: 0; }
+  .ceil-bar-bg { flex: 1; background: #e5e7eb; height: 20px; position: relative; }
+  .ceil-bar-fill { height: 100%; position: absolute; left: 0; top: 0; }
+  .ceil-val { width: 55px; text-align: right; flex-shrink: 0; font-weight: 600; font-size: 11px; }
+  .ceil-best { width: 55px; text-align: right; flex-shrink: 0; font-size: 11px; color: #008054; font-weight: 600; }
+  footer { margin-top: 48px; padding-top: 14px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="prog-header">
+    <h1>Responsibob — Unified Energy Framework v3</h1>
+    <p>June 2026 &nbsp;·&nbsp; Two-axis model: language efficiency × algorithmic efficiency &nbsp;·&nbsp; arXiv 2410.05460</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>The question this version answers:</strong> When we bring the language efficiency table alongside our certificates, does it change the ratings?</p>
+    <p><strong>Short answer: yes, but clarifying rather than overturning.</strong> It adds a second axis — the language multiplier — that sits beneath the algorithmic rating. It reveals the two certificates are not directly comparable on the same scale, and shows that the GenAI stack has a structural energy ceiling the RPG stack doesn't have.</p>
+  </div>
+
+  <div class="slabel">Language Energy Efficiency Reference (arXiv 2410.05460)</div>
+  <table>
+    <thead><tr><th>Language</th><th>Energy (×C)</th><th style="width:160px;">Bar</th><th>Tier</th><th>Where used</th></tr></thead>
+    <tbody>
+      <tr><td><strong>C</strong></td><td class="good">1.00</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:1.3%;background:#008054;"></div></div></td><td><span class="tier t1">Tier 1</span></td><td class="muted">llama.cpp inference</td></tr>
+      <tr style="background:#f0faf5;"><td><strong>RPG (estimated)</strong></td><td class="good">~1.05</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:1.4%;background:#008054;"></div></div></td><td><span class="tier t1">Tier 1</span></td><td class="good"><strong>SAMCO — all stages</strong></td></tr>
+      <tr><td><strong>C++</strong></td><td class="good">1.34</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:1.8%;background:#19a643;"></div></div></td><td><span class="tier t2">Tier 2</span></td><td class="muted">llama.cpp (compiled)</td></tr>
+      <tr><td><strong>Java</strong></td><td>1.98</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:2.6%;background:#8dc21f;"></div></div></td><td><span class="tier t3">Tier 2</span></td><td class="muted">—</td></tr>
+      <tr style="background:#fff8f0;"><td><strong>JavaScript</strong></td><td class="warn">4.45</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:5.9%;background:#f4aa00;"></div></div></td><td><span class="tier t5">Tier 3</span></td><td class="warn"><strong>Node.js proxy</strong></td></tr>
+      <tr style="background:#fff8f0;"><td><strong>TypeScript</strong></td><td class="warn">21.50</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:28.3%;background:#e8680a;"></div></div></td><td><span class="tier t6">Tier 4</span></td><td class="warn"><strong>Next.js UI</strong></td></tr>
+      <tr style="background:#fff8f0;"><td><strong>Python</strong></td><td class="warn">75.88</td><td><div class="mini-bar-bg"><div class="mini-bar-fill" style="width:100%;background:#c8181f;"></div></div></td><td><span class="tier t7">Tier 5</span></td><td class="warn"><strong>PassportEye service</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="slabel">Two-Axis Model — Language × Algorithm</div>
+  <div class="axis-grid">
+    <div class="ag-header">Component</div>
+    <div class="ag-header">Language axis</div>
+    <div class="ag-header">Algorithmic axis</div>
+    <div class="ag-header">Combined</div>
+
+    <div class="ag-row-label">SAMCO ART200<br><span style="font-weight:400;font-size:10px;color:#57606a;">Legacy RLA</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-a">A</span> RPG ~1.05×</div><div class="cell-note">Tier 1. Language is not the problem.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-f">F</span> 300 ops</div><div class="cell-note">N+1 RLA. This is entirely the problem.</div></div>
+    <div class="ag-cell hl"><div class="cell-rating"><span class="rbadge rb-f">F</span></div><div class="cell-note">Efficient language wasted by wasteful algorithm. Handbrake on.</div></div>
+
+    <div class="ag-row-label">SAMCO ART400<br><span style="font-weight:400;font-size:10px;color:#57606a;">REST API</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-a">A</span> RPG ~1.05×</div><div class="cell-note">Unchanged. Same language, same platform.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-a">A</span> 1 op</div><div class="cell-note">Single SELECT with JOINs. 300× fewer operations.</div></div>
+    <div class="ag-cell hl-g"><div class="cell-rating"><span class="rbadge rb-a">A</span></div><div class="cell-note"><strong>Both axes excellent. The ideal state.</strong></div></div>
+
+    <div class="ag-row-label">GenAI — llama.cpp<br><span style="font-weight:400;font-size:10px;color:#57606a;">Inference</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-b">B</span> C++ 1.34×</div><div class="cell-note">Tier 2. Right language for this job.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-c">C</span> Untuned</div><div class="cell-note">No thread/ctx/batch tuning. Improvement available.</div></div>
+    <div class="ag-cell hl"><div class="cell-rating"><span class="rbadge rb-c">C</span></div><div class="cell-note">Good language, improvable algorithm. Tuning → B.</div></div>
+
+    <div class="ag-row-label">GenAI — Proxy<br><span style="font-weight:400;font-size:10px;color:#57606a;">Node.js JS</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-e">E</span> JS 4.45×</div><div class="cell-note">Tier 3. Acceptable for thin proxy at demo load.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-d">D</span> Debug log</div><div class="cell-note">Full header logging on every request. Easily fixed.</div></div>
+    <div class="ag-cell hl"><div class="cell-rating"><span class="rbadge rb-e">E</span></div><div class="cell-note">Language ceiling ~E. Fix logging → better algo score.</div></div>
+
+    <div class="ag-row-label">GenAI — UI<br><span style="font-weight:400;font-size:10px;color:#57606a;">TypeScript</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-f">F</span> TS 21.5×</div><div class="cell-note">Tier 4. Structural floor for any Next.js app.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-c">C</span> Mostly good</div><div class="cell-note">useMemo ✓. stream:false improvable. Bundle size improvable.</div></div>
+    <div class="ag-cell hl"><div class="cell-rating"><span class="rbadge rb-e">E</span></div><div class="cell-note">Language multiplier dominates. UI does least compute — acceptable.</div></div>
+
+    <div class="ag-row-label">GenAI — PassportEye<br><span style="font-weight:400;font-size:10px;color:#57606a;">Python</span></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-g">G</span> Python 75.9×</div><div class="cell-note">Tier 5. Worst language multiplier in the stack.</div></div>
+    <div class="ag-cell"><div class="cell-rating"><span class="rbadge rb-a">A</span> &lt;1s / 100MB</div><div class="cell-note">Traditional CV + Tesseract MRZ. Task trivially bounded.</div></div>
+    <div class="ag-cell hl"><div class="cell-rating"><span class="rbadge rb-d">D</span></div><div class="cell-note"><strong>G language + A algorithm = D overall. Algorithm wins because task is tiny. Beats Granite Vision (C++ + F algorithm) by 100–300×.</strong></div></div>
+  </div>
+
+  <div class="slabel">Structural Energy Ceilings — Best Possible Rating per Language</div>
+  <div class="ceil-wrap">
+    <div class="ceil-row"><div class="ceil-label"><strong>SAMCO RPG</strong></div><div class="ceil-bar-bg"><div class="ceil-bar-fill" style="width:1.4%;background:#008054;"></div></div><div class="ceil-val good">~1.05×</div><div class="ceil-best">A ✓ achieved</div></div>
+    <div class="ceil-row"><div class="ceil-label">llama.cpp C++</div><div class="ceil-bar-bg"><div class="ceil-bar-fill" style="width:1.8%;background:#19a643;"></div></div><div class="ceil-val good">1.34×</div><div class="ceil-best">C → B</div></div>
+    <div class="ceil-row"><div class="ceil-label">Node.js proxy (JS)</div><div class="ceil-bar-bg"><div class="ceil-bar-fill" style="width:5.9%;background:#f4aa00;"></div></div><div class="ceil-val amber-t">4.45×</div><div class="ceil-best">D → C</div></div>
+    <div class="ceil-row"><div class="ceil-label">Next.js UI (TypeScript)</div><div class="ceil-bar-bg"><div class="ceil-bar-fill" style="width:28.3%;background:#e8680a;"></div></div><div class="ceil-val warn">21.5×</div><div class="ceil-best">E (ceiling)</div></div>
+    <div class="ceil-row"><div class="ceil-label">PassportEye (Python)</div><div class="ceil-bar-bg"><div class="ceil-bar-fill" style="width:100%;background:#c8181f;"></div></div><div class="ceil-val warn">75.9×</div><div class="ceil-best">D (algo saves it)</div></div>
+  </div>
+
+  <div class="callout green" style="margin-top:16px;">
+    <p><strong>The stack is correctly layered:</strong> the most computationally intensive work (LLM inference) runs in the most energy-efficient language (C++). The least intensive work (UI rendering) runs in the least efficient language (TypeScript). This is the right architecture even if it wasn't consciously designed that way.</p>
+    <p><strong>Priority order for energy improvement:</strong> (1) Algorithmic changes first — highest leverage, always improvable. (2) Language choice second — only worth changing if compute volume is large and sustained. (3) Infrastructure last.</p>
+  </div>
+
+  <div class="slabel">Revised Unified Summary</div>
+  <table>
+    <thead><tr><th>Project / Component</th><th>Language</th><th>Lang axis</th><th>Algo axis</th><th>Combined</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SAMCO ART200</strong></td><td>RPG</td><td><span class="tier t1">A ~1.05×</span></td><td><span class="tier t6">F 300 ops</span></td><td><strong class="warn">F</strong></td><td>Efficient language, wasteful algorithm. Superseded.</td></tr>
+      <tr><td><strong>SAMCO ART400</strong></td><td>RPG</td><td><span class="tier t1">A ~1.05×</span></td><td><span class="tier t1">A 1 op</span></td><td><strong class="good">A</strong></td><td>Both axes excellent. The ideal state.</td></tr>
+      <tr><td><strong>GenAI — llama.cpp</strong></td><td>C++</td><td><span class="tier t2">B 1.34×</span></td><td><span class="tier t3">C untuned</span></td><td><strong class="amber-t">C</strong></td><td>Tune threads/ctx → B.</td></tr>
+      <tr><td><strong>GenAI — Proxy</strong></td><td>JavaScript</td><td><span class="tier t5">E 4.45×</span></td><td><span class="tier t4">D debug log</span></td><td><strong class="warn">E</strong></td><td>Fix logging → better. Lang ceiling ~E.</td></tr>
+      <tr><td><strong>GenAI — UI</strong></td><td>TypeScript</td><td><span class="tier t6">F 21.5×</span></td><td><span class="tier t3">C mostly good</span></td><td><strong class="warn">E</strong></td><td>Lang ceiling is F; good algo partially offsets.</td></tr>
+      <tr><td><strong>GenAI — PassportEye</strong></td><td>Python</td><td><span class="tier t7">G 75.9×</span></td><td><span class="tier t1">A &lt;1s/100MB</span></td><td><strong class="amber-t">D</strong></td><td>Worst language, best algorithm. Beats LLM approach by 100–300×.</td></tr>
+    </tbody>
+  </table>
+
+  <footer>Responsibob Initiative · Made with IBM Bob · June 2026</footer>
+</div>
+</body>
+</html>
